@@ -5,7 +5,8 @@ import pandas as pd
 import pdfplumber
 import openpyxl
 import re
-import os # Import the 'os' module to check for file existence
+import os
+import base64 # Import the base64 library for image embedding
 
 # To parse .docx files, you need to install python-docx
 try:
@@ -30,26 +31,28 @@ a {text-decoration: none;}
 </style>
 """, unsafe_allow_html=True)
 
-# ============= HEADER with LOGO and TITLE =============
-logo_col, title_col = st.columns([1, 5])
+# ============= NEW: ROBUST HEADER with LOGO and TITLE =============
+def get_image_as_base64(path):
+    if not os.path.exists(path):
+        return None
+    with open(path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
 
-with logo_col:
-    # Ensure the logo file exists before trying to display it
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=100)
-    else:
-        # Fallback text if logo.png is not found
-        st.markdown("#### People_TECH")
+img_base64 = get_image_as_base64("logo.png")
 
-with title_col:
-    st.markdown("""
-        <div style="background:var(--accent); padding:10px 22px; border-radius:14px;">
-          <h1 style="color:#fff; font-size:1.8em; margin:0; line-height:1.2;">E‑Bike Regulatory Compliance & Safety Checking tool</h1>
-          <p style="color:#eaf4ff; margin:0; font-weight:500;">A People TECH Company Solution</p>
-        </div>
-    """, unsafe_allow_html=True)
+logo_html = f'<img src="data:image/png;base64,{img_base64}" style="width: 100px; height: auto; margin-right: 20px;">' if img_base64 else '<h2 style="color:var(--accent);">People_TECH</h2>'
 
-st.markdown("<br>", unsafe_allow_html=True) # Add some space below the header
+st.markdown(f"""
+<div style="display: flex; align-items: center; background:var(--panel); padding: 15px; border-radius: 14px; box-shadow: 0 2px 16px var(--shadow);">
+    {logo_html}
+    <div>
+        <h1 style="color:var(--accent); font-size:1.8em; margin:0; line-height:1.2;">E‑Bike Regulatory Compliance & Safety Checking tool</h1>
+        <p style="color:#555; margin:0; font-weight:500;">A People TECH Company Solution</p>
+    </div>
+</div>
+<br>
+""", unsafe_allow_html=True)
+
 
 # ============= UPGRADED Keyword-to-Standard Mapping Engine =============
 KEYWORD_TO_STANDARD_MAP = {
@@ -351,4 +354,3 @@ else:
     c2.metric("Requirements Generated", 0)
     c3.metric("Components in DB", len(st.session_state.get("component_db", [])))
     st.markdown('</div>', unsafe_allow_html=True)
-
