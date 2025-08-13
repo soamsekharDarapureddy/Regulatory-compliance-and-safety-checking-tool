@@ -1,7 +1,10 @@
-streamlit as st
-pandas as pd
+# requirements.txt
+
+# Core web framework for the user interface
+streamlit
+
+# Libraries for data handling and parsing
+pandas
 pdfplumber
-openpyxl # needed by pandas for xlsx
-re
-os
-base64
+openpyxl
+python-docx

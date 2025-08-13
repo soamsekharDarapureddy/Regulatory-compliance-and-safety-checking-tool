@@ -6,7 +6,7 @@ import pdfplumber
 import openpyxl
 import re
 import os
-import base64 # Import the base64 library for image embedding
+import base64
 
 # To parse .docx files, you need to install python-docx
 try:
