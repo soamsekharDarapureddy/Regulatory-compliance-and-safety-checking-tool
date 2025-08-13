@@ -33,15 +33,19 @@ a {text-decoration: none;}
 
 # ============= NEW: ROBUST HEADER with LOGO and TITLE =============
 def get_image_as_base64(path):
+    """Function to embed a local image file into the HTML."""
     if not os.path.exists(path):
         return None
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
+# Get the base64 string of the logo
 img_base64 = get_image_as_base64("logo.png")
 
+# Create the HTML for the logo. If logo.png is not found, it will display the company name as text.
 logo_html = f'<img src="data:image/png;base64,{img_base64}" style="width: 100px; height: auto; margin-right: 20px;">' if img_base64 else '<h2 style="color:var(--accent);">People_TECH</h2>'
 
+# Render the final header using a robust flexbox layout in HTML
 st.markdown(f"""
 <div style="display: flex; align-items: center; background:var(--panel); padding: 15px; border-radius: 14px; box-shadow: 0 2px 16px var(--shadow);">
     {logo_html}
@@ -198,7 +202,7 @@ st.sidebar.info("This tool helps verify compliance reports, generate test requir
 
 # ============= Module: Test Report Verification (with Columns) =============
 if option == "Test Report Verification":
-    st.markdown('<div class="gem-panel">', unsafe_allow_html=True)
+    st.markdown('<div class="gem-panel" style="background: #fff;">', unsafe_allow_html=True)
     st.subheader("Upload & Verify Test Report", anchor=False)
     st.caption("Upload PDF/DOCX reports. The parser intelligently extracts and groups tests by PASS/FAIL status into side-by-side columns.")
 
