@@ -27,16 +27,17 @@ st.markdown("""
 .result-fail{color:#c43a31; font-weight:700;}
 .result-na{color:#808080; font-weight:700;}
 a {text-decoration: none;}
-.main .block-container {
-    padding-top: 2rem;
-}
+.main .block-container { padding-top: 2rem; }
+.component-label { font-weight: bold; color: #333; }
+.component-value { color: #555; }
 </style>
 """, unsafe_allow_html=True)
 
 # === Session State Initialization ===
 def init_session_state():
     state_defaults = {
-        "reports_verified": 0, "requirements_generated": 0, "found_component": {}, "component_db": pd.DataFrame()
+        "reports_verified": 0, "requirements_generated": 0, "found_component": None, 
+        "component_db": pd.DataFrame()
     }
     for key, value in state_defaults.items():
         if key not in st.session_state:
@@ -63,7 +64,6 @@ if logo_base64:
         </div>
     """, unsafe_allow_html=True)
 else:
-    st.error("Logo file 'people_tech_logo.png' not found.")
     st.title("Regulatory Compliance & Safety Verification Tool")
 
 
@@ -79,193 +79,93 @@ TEST_CASE_KNOWLEDGE_BASE = {
     "vibration": {"requirement": "DUT must withstand vibration without mechanical failure.", "equipment": ["Shaker Table"]},
 }
 
-# --- MODIFICATION: Expanded Component Databases ---
-# Main database for non-cluster parts
-COMPONENT_KNOWLEDGE_BASE = {
-    # VCU, Motor Controller, Charger, BMS
-    "spc560p50l3": {"subsystem": "VCU", "part_name": "32-bit MCU", "manufacturer": "STMicroelectronics", "certifications": "AEC-Q100"},
-    "tja1051t": {"subsystem": "VCU", "part_name": "CAN Transceiver", "manufacturer": "NXP", "certifications": "AEC-Q100"},
-    "tle4275g": {"subsystem": "VCU", "part_name": "5V LDO Regulator", "manufacturer": "Infineon", "certifications": "AEC-Q100"},
-    "fsbb30ch60f": {"subsystem": "Motor Controller", "part_name": "IGBT Module", "manufacturer": "ON Semi"},
-    "wslp2512r0100fe": {"subsystem": "Motor Controller", "part_name": "Current Sense Resistor", "manufacturer": "Vishay"},
-    "bq76952": {"subsystem": "BMS", "part_name": "Battery Monitor", "manufacturer": "Texas Instruments"},
-    
-    # General Purpose and Newly Added Components
-    "irfz44n": {"subsystem": "General", "part_name": "MOSFET", "manufacturer": "Infineon"},
-    "1n4007": {"subsystem": "General", "part_name": "Diode", "manufacturer": "Multiple"},
-    "fh28-10s-0.5sh(05)": {"manufacturer": "Hirose Electric Co Ltd", "part_name": "Connector", "subsystem": "General"},
-    "gcm155l81e104ke02d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "cga3e3x7s1a225k080ae": {"manufacturer": "TDK Corporation", "part_name": "Capacitor", "subsystem": "General"},
-    "grt1555c1e220ja02j": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "grt155r61a475me13d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "grt31cr61a476ke13l": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "cga3e1x7r1e105k080ac": {"manufacturer": "TDK Corporation", "part_name": "Capacitor", "subsystem": "General"},
-    "cga2b2c0g1h180j050ba": {"manufacturer": "TDK Corporation", "part_name": "Capacitor", "subsystem": "General"},
-    "c0402c103k4racauto": {"manufacturer": "KEMET", "part_name": "Capacitor", "subsystem": "General"},
-    "gcm1555c1h101ja16d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "grt155r71h104ke01d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "grt21br61e226me13l": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "grt1555c1h150fa02d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "0402yc222j4t2a": {"manufacturer": "KYOCERA AVX", "part_name": "Capacitor", "subsystem": "General"},
-    "gcm1555c1h560fa16d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "grt1555c1h330fa02d": {"manufacturer": "Murata Electronics North America", "part_name": "Capacitor", "subsystem": "General"},
-    "grt188c81a106me13d": {"manufacturer": "Murata Electronics North America", "part_name": "Capacitor", "subsystem": "General"},
-    "umk212b7105kght": {"manufacturer": "Taiyo Yuden", "part_name": "Capacitor", "subsystem": "General"},
-    "c1206c104k5racauto": {"manufacturer": "KEMET", "part_name": "Capacitor", "subsystem": "General"},
-    "grt31cr61h106ke01k": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "mcasu105sb7103kfna01": {"manufacturer": "Taiyo Yuden", "part_name": "Capacitor", "subsystem": "General"},
-    "c0402c333k4racauto": {"manufacturer": "KEMET", "part_name": "Capacitor", "subsystem": "General"},
-    "cl10b474ko8vpnc": {"manufacturer": "Samsung Electro-Mechanics", "part_name": "Capacitor", "subsystem": "General"},
-    "gcm155r71c224ke02d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "gcm155r71h102ka37j": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "50tpv330m10x10.5": {"manufacturer": "Rubycon", "part_name": "Capacitor", "subsystem": "General"},
-    "cl31b684kbhwpne": {"manufacturer": "Samsung Electro-Mechanics", "part_name": "Capacitor", "subsystem": "General"},
-    "gcm155r71h272ka37d": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "edk476m050s9haa": {"manufacturer": "KEMET", "part_name": "Capacitor", "subsystem": "General"},
-    "gcm155r71h332ka37j": {"manufacturer": "Murata Electronics", "part_name": "Capacitor", "subsystem": "General"},
-    "a768ke336m1hlae042": {"manufacturer": "KEMET", "part_name": "Capacitor", "subsystem": "General"},
-    "ac0402jrx7r9bb152": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "d5v0h1b2lpq-7b": {"manufacturer": "Diodes Incorporated", "part_name": "Diode", "subsystem": "General"},
-    "szmmbz9v1alt3g": {"manufacturer": "onsemi", "part_name": "Diode", "subsystem": "General"},
-    "d24v0s1u2tq-7": {"manufacturer": "Diodes Incorporated", "part_name": "Diode", "subsystem": "General"},
-    "b340bq-13-f": {"manufacturer": "Diodes Incorporated", "part_name": "Diode", "subsystem": "General"},
-    "tld8s22ah": {"manufacturer": "Taiwan Semiconductor", "part_name": "Diode", "subsystem": "General"},
-    "b260aq-13-f": {"manufacturer": "Diodes Incorporated", "part_name": "Diode", "subsystem": "General"},
-    "rb530sm-40fht2r": {"manufacturer": "Rohm Semiconductor", "part_name": "Diode", "subsystem": "General"},
-    "74279262": {"manufacturer": "Würth Elektronik", "part_name": "Ferrite Bead", "subsystem": "General"},
-    "742792641": {"manufacturer": "Würth Elektronik", "part_name": "Ferrite Bead", "subsystem": "General"},
-    "742792625": {"manufacturer": "Würth Elektronik", "part_name": "Ferrite Bead", "subsystem": "General"},
-    "742792150": {"manufacturer": "Würth Elektronik", "part_name": "Ferrite Bead", "subsystem": "General"},
-    "78279220800": {"manufacturer": "Würth Elektronik", "part_name": "Ferrite Bead", "subsystem": "General"},
-    "voma617a-4x001t": {"manufacturer": "Vishay Semiconductor Opto Division", "part_name": "Optocoupler", "subsystem": "General"},
-    "534260610": {"manufacturer": "Molex", "part_name": "Connector", "subsystem": "General"},
-    "fh52-40s-0.5sh(99)": {"manufacturer": "Hirose Electric Co Ltd", "part_name": "Connector", "subsystem": "General"},
-    "x8821wv-06l-n0sn": {"manufacturer": "XKB", "part_name": "Connector", "subsystem": "General"},
-    "744235510": {"manufacturer": "Würth Elektronik", "part_name": "Inductor", "subsystem": "General"},
-    "lqw15an56nj8zd": {"manufacturer": "Murata Electronics", "part_name": "Inductor", "subsystem": "General"},
-    "spm7054vt-220m-d": {"manufacturer": "TDK Corporation", "part_name": "Inductor", "subsystem": "General"},
-    "744273801": {"manufacturer": "Wurth Electronics Inc", "part_name": "Inductor", "subsystem": "General"},
-    "74404084068": {"manufacturer": "Würth Elektronik", "part_name": "Inductor", "subsystem": "General"},
-    "744231091": {"manufacturer": "Würth Elektronik", "part_name": "Inductor", "subsystem": "General"},
-    "mlz2012m6r8htd25": {"manufacturer": "TDK Corporation", "part_name": "Inductor", "subsystem": "General"},
-    "rq3g270bjfratcb": {"manufacturer": "Rohm Semiconductor", "part_name": "MOSFET", "subsystem": "General"},
-    "pja138k-au_r1_000a1": {"manufacturer": "Panjit International Inc.", "part_name": "MOSFET", "subsystem": "General"},
-    "dmp2070uq-7": {"manufacturer": "Diodes Incorporated", "part_name": "MOSFET", "subsystem": "General"},
-    "ac0402jr-070rl": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "ac0402fr-07100kl": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft158k": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft30k0": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft127k": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmc10k204fth": {"manufacturer": "KAMAYA", "part_name": "Resistor", "subsystem": "General"},
-    "erj-2rkf2201x": {"manufacturer": "Panasonic Electronic Components", "part_name": "Resistor", "subsystem": "General"},
-    "erj-2rkf1002x": {"manufacturer": "Panasonic Electronic Components", "part_name": "Resistor", "subsystem": "General"},
-    "wr04x1004ftl": {"manufacturer": "Walsin Technology Corporation", "part_name": "Resistor", "subsystem": "General"},
-    "wr04x10r0ftl": {"manufacturer": "Walsin Technology Corporation", "part_name": "Resistor", "subsystem": "General"},
-    "rc0603fr-0759rl": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "rmc1/16jptp": {"manufacturer": "Kamaya Inc.", "part_name": "Resistor", "subsystem": "General"},
-    "ac0402fr-07100rl": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "ac0402fr-076k04l": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "ac0402fr-07510rl": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "crgcq0402f56k": {"manufacturer": "TE Connectivity Passive Product", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft24k9": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft5k36": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0603ft12k0": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft210k": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "ltr18ezpfsr015": {"manufacturer": "Rohm Semiconductor", "part_name": "Resistor", "subsystem": "General"},
-    "erj-pa2j102x": {"manufacturer": "Panasonic Electronic Components", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft5k10": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0603ft100r": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "ac0402jr-074k7l": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "crf0805-fz-r010elf": {"manufacturer": "Bourns Inc.", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft3k16": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft3k48": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft1k50": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft4k02": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf1206zt0r00": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "rmcf0402ft402k": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
-    "ac0603fr-7w20kl": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
-    "h164yp": {"manufacturer": "AGENEW", "part_name": "Unknown", "subsystem": "General"},
-    "zldo1117qg33ta": {"manufacturer": "Diodes Incorporated", "part_name": "LDO Regulator", "subsystem": "General"},
-    "ap63357qzv-7": {"manufacturer": "Diodes Incorporated", "part_name": "Switching Regulator", "subsystem": "General"},
-    "pca9306idcurq1": {"manufacturer": "Texas Instruments", "part_name": "Level Translator", "subsystem": "General"},
-    "mcp2518fdt-e/sl": {"manufacturer": "Microchip Technology", "part_name": "CAN Controller", "subsystem": "General"},
-    "iso1042bqdwvq1": {"manufacturer": "Texas Instruments", "part_name": "CAN Transceiver", "subsystem": "General"},
-    "pesd2canfd27v-tr": {"manufacturer": "Nexperia USA Inc.", "part_name": "ESD Protection", "subsystem": "General"},
-    "lt8912b": {"manufacturer": "Lontium", "part_name": "MIPI DSI/CSI-2 Bridge", "subsystem": "General"},
-    "sn74lv1t34qdckrq1": {"manufacturer": "Texas Instruments", "part_name": "Buffer", "subsystem": "General"},
-    "ncp164csnadjt1g": {"manufacturer": "onsemi", "part_name": "LDO Regulator", "subsystem": "General"},
-    "20279-001e-03": {"manufacturer": "I-PEX", "part_name": "Connector", "subsystem": "General"},
-    "ncv8161asn180t1g": {"manufacturer": "onsemi", "part_name": "LDO Regulator", "subsystem": "General"},
-    "drtr5v0u2sr-7": {"manufacturer": "Diodes Incorporated", "part_name": "ESD Protection", "subsystem": "General"},
-    "ncv8161asn330t1g": {"manufacturer": "onsemi", "part_name": "LDO Regulator", "subsystem": "General"},
-    "ecmf04-4hswm10y": {"manufacturer": "STMicroelectronics", "part_name": "Common Mode Filter", "subsystem": "General"},
-    "nxs0102dc-q100h": {"manufacturer": "Nexperia USA Inc.", "part_name": "Level Translator", "subsystem": "General"},
-    "cf0505xt-1wr3": {"manufacturer": "MORNSUN", "part_name": "DC/DC Converter", "subsystem": "General"},
-    "iam-20680ht": {"manufacturer": "TDK InvenSense", "part_name": "IMU Sensor", "subsystem": "General"},
-    "attiny1616-szt-vao": {"manufacturer": "Microchip", "part_name": "MCU", "subsystem": "General"},
-    "tlv9001qdckrq1": {"manufacturer": "Texas Instruments", "part_name": "Op-Amp", "subsystem": "General"},
-    "qmc5883l": {"manufacturer": "QST", "part_name": "Magnetometer", "subsystem": "General"},
-    "lm76202qpwprq1": {"manufacturer": "Texas Instruments", "part_name": "Ideal Diode Controller", "subsystem": "General"},
-    "bd83a04efv-me2": {"manufacturer": "Rohm Semiconductor", "part_name": "LED Driver", "subsystem": "General"},
-    "ecs-200-12-33q-jes-tr": {"manufacturer": "ECS Inc.", "part_name": "Crystal", "subsystem": "General"},
-    "ecs-250-12-33q-jes-tr": {"manufacturer": "ECS Inc.", "part_name": "Crystal", "subsystem": "General"},
-    "aggbp.25a.07.0060a": {"manufacturer": "Toaglas", "part_name": "GNSS Antenna", "subsystem": "General"},
-    "y4ete00a0aa": {"manufacturer": "Quectel", "part_name": "LTE Module", "subsystem": "General"},
-    "yf0023aa": {"manufacturer": "Quectel", "part_name": "Wi-Fi/BT Antenna", "subsystem": "General"},
-}
+# --- COMPLETE, UNIFIED, and EMBEDDED Component Database ---
+UNIFIED_COMPONENT_DB = {
+    # VCU, Motor Controller, etc.
+    "spc560p50l3": {"Subsystem": "VCU", "Part Name": "32-bit MCU", "Manufacturer": "STMicroelectronics", "Qualification": "AEC-Q100"},
+    "tja1051t": {"Subsystem": "VCU", "Part Name": "CAN Transceiver", "Manufacturer": "NXP", "Qualification": "AEC-Q100"},
+    "fsbb30ch60f": {"Subsystem": "Motor Controller", "Part Name": "IGBT Module", "Manufacturer": "ON Semi"},
+    "bq76952": {"Subsystem": "BMS", "Part Name": "Battery Monitor", "Manufacturer": "Texas Instruments"},
 
-# Database for Cluster-related parts
-CLUSTER_COMPONENT_KNOWLEDGE_BASE = {
-    "mb9df125": {"subsystem": "Instrument Cluster", "part_name": "MCU with Graphics", "manufacturer": "Spansion (Cypress)"},
-    "veml6031x00": {"subsystem": "ALS Board", "part_name": "Ambient Light Sensor", "manufacturer": "Vishay"},
-    "01270019-00": {"subsystem": "VIC Module", "part_name": "ANTENNA GPS", "manufacturer": "Unknown"},
-    "01270020-00": {"subsystem": "VIC Module", "part_name": "ANTENNA WIFI", "manufacturer": "Unknown"},
-    "01270021-00": {"subsystem": "VIC Module", "part_name": "ANTENNA LTE", "manufacturer": "Unknown"},
-    "p0024-03": {"subsystem": "VIC Module", "part_name": "PCBA BOARD", "manufacturer": "Unknown"},
-    "01270018-00": {"subsystem": "VIC Module", "part_name": "SENSOR ALS-PCBA", "manufacturer": "Unknown"},
-    "01270010-02": {"subsystem": "VIC Module", "part_name": "TFT LCD WITH COVER GLASS", "manufacturer": "Unknown"},
+    # Capacitors - Detailed
+    "gcm155l81e104ke02d": {"Manufacturer": "Murata", "Product Category": "MLCC - SMD/SMT", "Capacitance": "0.1 uF", "Voltage Rating DC": "25 VDC", "Dielectric": "X8L", "Tolerance": "10 %", "Case Code": "0402", "Min Temp": "-55 C", "Max Temp": "+150 C", "Qualification": "AEC-Q200"},
+    "cga3e3x7s1a225k080ae": {"Manufacturer": "TDK", "Product Category": "MLCC - SMD/SMT", "Capacitance": "2.2 uF", "Voltage Rating DC": "10 VDC", "Dielectric": "X7S", "Tolerance": "10 %", "Case Code": "0603", "Qualification": "AEC-Q200"},
+    "edk476m050s9haa": {"Manufacturer": "KEMET", "Product Category": "Aluminum Electrolytic", "Capacitance": "47 uF", "Voltage Rating DC": "50 VDC", "Tolerance": "20 %", "Min Temp": "-40 C", "Max Temp": "+105 C"},
+    
+    # Diodes - Detailed
+    "d5v0h1b2lpq-7b": {"Manufacturer": "Diodes Inc.", "Product Category": "ESD Protection Diode", "Peak Pulse Power": "30 W", "Breakdown Voltage": "6V", "Package": "DFN1006", "Qualification": "AEC-Q101"},
+    "b340bq-13-f": {"Manufacturer": "Diodes Inc.", "Product Category": "Schottky Diode", "Forward Current": "3A", "Reverse Voltage": "40V", "Package": "SMB", "Qualification": "AEC-Q101"},
+    
+    # Inductors & Ferrites
+    "74279262": {"Manufacturer": "Würth Elektronik", "Product Category": "Ferrite Bead", "Impedance": "220 Ohm @ 100 MHz", "Current Rating": "3A", "Package": "0805"},
+    "spm7054vt-220m-d": {"Manufacturer": "TDK", "Product Category": "Power Inductor", "Inductance": "22 uH", "Current Rating": "2.5A", "Package": "SMD", "Qualification": "AEC-Q200"},
+
+    # MOSFETs
+    "irfz44n": {"Subsystem": "General", "Part Name": "MOSFET", "Manufacturer": "Infineon", "Voltage": "55V", "Current": "49A"},
+    "rq3g270bjfratcb": {"Manufacturer": "Rohm", "Product Category": "MOSFET", "Voltage": "12V", "Current": "27A", "Package": "HSMT8"},
+
+    # Other Components (with placeholders - data to be filled from datasheets)
+    "1n4007": {"Subsystem": "General", "Part Name": "Diode", "Manufacturer": "Multiple"},
+    "fh28-10s-0.5sh(05)": {"Manufacturer": "Hirose", "part_name": "Connector", "subsystem": "General"},
+    "zldo1117qg33ta": {"Manufacturer": "Diodes Incorporated", "part_name": "LDO Regulator", "subsystem": "General"},
+    "pca9306idcurq1": {"Manufacturer": "Texas Instruments", "part_name": "Level Translator", "subsystem": "General"},
+    "iso1042bqdwvq1": {"Manufacturer": "Texas Instruments", "part_name": "CAN Transceiver", "subsystem": "General"},
+    "iam-20680ht": {"Manufacturer": "TDK InvenSense", "part_name": "IMU Sensor", "subsystem": "General"},
+    "attiny1616-szt-vao": {"Manufacturer": "Microchip", "part_name": "MCU", "subsystem": "General"},
+    "qmc5883l": {"Manufacturer": "QST", "part_name": "Magnetometer", "subsystem": "General"},
+    "y4ete00a0aa": {"Manufacturer": "Quectel", "part_name": "LTE Module", "subsystem": "General"},
+    "yf0023aa": {"Manufacturer": "Quectel", "part_name": "Wi-Fi/BT Antenna", "subsystem": "General"},
+    "mb9df125": {"Subsystem": "Instrument Cluster", "Part Name": "MCU with Graphics", "Manufacturer": "Spansion (Cypress)"},
+    "veml6031x00": {"Subsystem": "ALS Board", "Part Name": "Ambient Light Sensor", "Manufacturer": "Vishay"},
 }
 
 
 def intelligent_parser(text: str):
-    # This function remains unchanged
     extracted_tests = []
-    lines = text.split('\n')
+    lines = text.splitlines()
     for line in lines:
         line = line.strip()
         if not line: continue
+        
         test_data = {"TestName": "N/A", "Result": "N/A", "Actual": "N/A", "Standard": "N/A"}
+        
         patterns = [
-            r'^(.*?)\s*-->\s*(Passed|Failed|Success)\s*-->\s*(.+)$', r'^(.*?)\s*-->\s*(.+)$',
-            r'^\d+:\s*([A-Z_]+):\s*"([A-Z]+)"$', r'^(.+?)\s+is\s+(success|failure|passed|failed)$',
+            r'^(.*?)\s*-->\s*(Passed|Failed|Success)\s*-->\s*(.+)$',
+            r'^(.*?)\s*-->\s*(.+)$',
+            r'^\d+:\s*([A-Z_]+):\s*"([A-Z]+)"$',
+            r'^(.+?)\s+is\s+(success|failure|passed|failed)$',
             r'^(.+?)\s+(Failed|Passed)$',
         ]
-        # Regex matching logic here...
-        match = re.match(patterns[0], line, re.I)
-        if match:
-            test_data.update({"TestName": match.group(1).strip(), "Result": "PASS" if match.group(2).lower() in ["passed", "success"] else "FAIL", "Actual": match.group(3).strip()})
-        elif (match := re.match(patterns[1], line, re.I)):
-            result_str = match.group(2).lower()
-            result = "PASS" if "passed" in result_str or "success" in result_str else "FAIL" if "failed" in result_str else "INFO"
-            test_data.update({"TestName": match.group(1).strip(), "Result": result, "Actual": match.group(2).strip()})
-        elif (match := re.match(patterns[2], line)):
-            test_data.update({"TestName": match.group(1).strip().replace("_", " "), "Result": match.group(2).strip()})
-        elif (match := re.match(patterns[3], line, re.I)):
-            test_data.update({"TestName": match.group(1).strip(), "Result": "PASS" if match.group(2).lower() in ["success", "passed"] else "FAIL"})
-        elif (match := re.match(patterns[4], line, re.I)):
-            test_data.update({"TestName": match.group(1).strip(), "Result": "PASS" if match.group(2).lower() == "passed" else "FAIL"})
-        else:
-            continue
-        
-        for keyword, standard in KEYWORD_TO_STANDARD_MAP.items():
-            if keyword in test_data["TestName"].lower():
-                test_data["Standard"] = standard
+
+        match = None
+        for p in patterns:
+            match = re.match(p, line, re.I)
+            if match:
                 break
-        extracted_tests.append(test_data)
+        
+        if match:
+            groups = match.groups()
+            if len(groups) == 3: # Pattern 1
+                test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["passed", "success"] else "FAIL", "Actual": groups[2].strip()})
+            elif len(groups) == 2: # Patterns 2, 3, 4, 5
+                result_str = groups[1].lower()
+                if "passed" in result_str or "success" in result_str:
+                    test_data["Result"] = "PASS"
+                elif "failed" in result_str:
+                    test_data["Result"] = "FAIL"
+                else:
+                    test_data["Result"] = "INFO"
+                test_data.update({"TestName": groups[0].strip(), "Actual": groups[1].strip()})
+
+            for keyword, standard in KEYWORD_TO_STANDARD_MAP.items():
+                if keyword in test_data["TestName"].lower():
+                    test_data["Standard"] = standard
+                    break
+            extracted_tests.append(test_data)
+            
     return extracted_tests
 
 def parse_report(uploaded_file):
-    # This function remains unchanged
     if not uploaded_file: return []
     try:
         file_extension = os.path.splitext(uploaded_file.name.lower())[1]
@@ -276,18 +176,20 @@ def parse_report(uploaded_file):
             df.rename(columns=rename_map, inplace=True)
             return df.to_dict('records')
         elif file_extension == '.pdf':
-             with pdfplumber.open(uploaded_file) as pdf: content = "".join(page.extract_text() + "\n" for page in pdf.pages if page.extract_text())
-        else: content = uploaded_file.getvalue().decode('utf-8', errors='ignore')
+             with pdfplumber.open(uploaded_file) as pdf:
+                content = "".join(page.extract_text() + "\n" for page in pdf.pages if page.extract_text())
+        else:
+            content = uploaded_file.getvalue().decode('utf-8', errors='ignore')
         return intelligent_parser(content)
     except Exception as e:
         st.error(f"An error occurred while parsing: {e}")
         return []
 
 def display_test_card(test_case, color):
-    # This function remains unchanged
     details = f"<b>🧪 Test:</b> {test_case.get('TestName', 'N/A')}<br>"
     for key, label in {'Standard': '📘 Standard', 'Expected': '🎯 Expected', 'Actual': '📌 Actual', 'Description': '💬 Description'}.items():
-        if pd.notna(value := test_case.get(key)) and str(value).strip() and str(value).lower() not in ['—', 'nan']:
+        value = test_case.get(key)
+        if pd.notna(value) and str(value).strip() and str(value).lower() not in ['—', 'nan']:
             details += f"<b>{label}:</b> {value}<br>"
     st.markdown(f"<div class='card' style='border-left-color:{color};'>{details}</div>", unsafe_allow_html=True)
 
@@ -307,7 +209,9 @@ if option == "Test Report Verification":
             passed = [t for t in parsed_data if "PASS" in str(t.get("Result", "")).upper()]
             failed = [t for t in parsed_data if "FAIL" in str(t.get("Result", "")).upper()]
             others = [t for t in parsed_data if not ("PASS" in str(t.get("Result", "")).upper() or "FAIL" in str(t.get("Result", "")).upper())]
+            
             st.markdown(f"### Found {len(passed)} Passed, {len(failed)} Failed, and {len(others)} Other items.")
+            
             if passed:
                 with st.expander("✅ Passed Cases", expanded=True):
                     for t in passed: display_test_card(t, '#1e9f50')
@@ -320,7 +224,7 @@ if option == "Test Report Verification":
         else:
             st.warning("No recognizable data was extracted.")
 
-# --- Other Modules (remain unchanged) ---
+# --- Other Modules ---
 elif option == "Test Requirement Generation":
     st.subheader("Generate Test Requirements", anchor=False)
     st.caption("Enter test cases to generate formal requirements.")
@@ -333,44 +237,49 @@ elif option == "Test Requirement Generation":
             for i, case in enumerate(cases):
                 req = next((info for key, info in TEST_CASE_KNOWLEDGE_BASE.items() if key in case.lower()), None)
                 html = f"<div class='card' style='border-left-color:#7c3aed;'><b>Test Case:</b> {case.title()}<br><b>Req ID:</b> REQ_{i+1:03d}<br>"
-                html += f"<b>Description:</b> {req['requirement']}<br><b>Equipment:</b> {', '.join(req['equipment'])}" if req else "<b>Description:</b> Generic requirement - system must be tested."
+                if req:
+                    html += f"<b>Description:</b> {req['requirement']}<br><b>Equipment:</b> {', '.join(req['equipment'])}"
+                else:
+                    html += "<b>Description:</b> Generic requirement - system must be tested."
                 st.markdown(html + "</div>", unsafe_allow_html=True)
 
 elif option == "Component Information":
     st.subheader("Key Component Information", anchor=False)
-    st.caption("Look up parts across all internal databases.")
-    COMBINED_DB = {**COMPONENT_KNOWLEDGE_BASE, **CLUSTER_COMPONENT_KNOWLEDGE_BASE}
-    part_q = st.text_input("Quick Lookup (part number)", placeholder="e.g., irfz44n, veml6031x00").lower().strip()
+    st.caption("Look up parts from the detailed component database.")
+    
+    part_q = st.text_input("Quick Lookup (part number)", placeholder="e.g., gcm155l81e104ke02d").lower().strip()
+    
     if st.button("Find Component"):
-        key = next((k for k in COMBINED_DB if k in part_q), None)
-        if key:
-            st.session_state.found_component = {"part_number": key, **COMBINED_DB[key]}
-            st.success(f"Found: {key.upper()}. Details populated below.")
-        else:
-            st.session_state.found_component = {}
-            st.warning("Not in internal databases. Use research links:")
-            if part_q:
-                c1, c2, c3 = st.columns(3)
-                c1.link_button("Octopart", f"https://octopart.com/search?q={part_q}")
-                c2.link_button("Digi-Key", f"https://www.digikey.com/en/products/result?s={part_q}")
-                c3.link_button("Google", f"https://www.google.com/search?q={part_q}+datasheet")
-    st.markdown("---")
-    d = st.session_state.get('found_component', {})
-    with st.form("component_form", clear_on_submit=True):
-        st.markdown("### Add Component to Project Database")
-        pn = st.text_input("Part Number", value=d.get("part_number", ""))
-        mfg = st.text_input("Manufacturer", value=d.get("manufacturer", ""))
-        func = st.text_input("Function / Part Name", value=d.get("part_name", d.get("function", "")))
-        notes = st.text_area("Notes (e.g., Subsystem, Certifications)", value=d.get("subsystem", d.get("certifications", "")))
-        if st.form_submit_button("Add Component"):
-            if pn:
-                new_row = pd.DataFrame([{"Part Number": pn, "Manufacturer": mfg, "Function": func, "Notes": notes}])
-                st.session_state.component_db = pd.concat([st.session_state.component_db, new_row], ignore_index=True)
-                st.success(f"Component '{pn}' added to the database.")
-                st.session_state.found_component = {}
-    if not st.session_state.component_db.empty:
-        st.markdown("#### Project Component Database")
-        st.dataframe(st.session_state.component_db, use_container_width=True)
+        if part_q:
+            result = UNIFIED_COMPONENT_DB.get(part_q)
+            if result:
+                st.session_state.found_component = result
+                st.success(f"Found: {part_q.upper()}. Displaying details below.")
+            else:
+                st.session_state.found_component = None
+                st.warning("Part number not found in the internal database.")
+    
+    if st.session_state.found_component:
+        st.markdown("---")
+        component = st.session_state.found_component
+        st.markdown(f"### Details for: {part_q.upper()}")
+        
+        # Filter out keys with no meaningful value before displaying
+        display_data = {k.replace('_', ' ').title(): v for k, v in component.items() if pd.notna(v)}
+        
+        data_items = list(display_data.items())
+        
+        col1, col2 = st.columns(2)
+        
+        midpoint = len(data_items) // 2 + (len(data_items) % 2)
+        
+        with col1:
+            for key, value in data_items[:midpoint]:
+                st.markdown(f"<span class='component-label'>{key}:</span> <span class='component-value'>{value}</span>", unsafe_allow_html=True)
+        
+        with col2:
+            for key, value in data_items[midpoint:]:
+                st.markdown(f"<span class='component-label'>{key}:</span> <span class='component-value'>{value}</span>", unsafe_allow_html=True)
 
 else: # Dashboard
     st.subheader("Dashboard & Analytics", anchor=False)
