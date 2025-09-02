@@ -81,42 +81,144 @@ TEST_CASE_KNOWLEDGE_BASE = {
 
 # --- COMPLETE, UNIFIED, and EMBEDDED Component Database ---
 UNIFIED_COMPONENT_DB = {
-    # VCU, Motor Controller, etc.
+    # VCU, Motor Controller, Charger, BMS
     "spc560p50l3": {"Subsystem": "VCU", "Part Name": "32-bit MCU", "Manufacturer": "STMicroelectronics", "Qualification": "AEC-Q100"},
     "tja1051t": {"Subsystem": "VCU", "Part Name": "CAN Transceiver", "Manufacturer": "NXP", "Qualification": "AEC-Q100"},
+    "tle4275g": {"Subsystem": "VCU", "Part Name": "5V LDO Regulator", "Manufacturer": "Infineon", "Qualification": "AEC-Q100"},
     "fsbb30ch60f": {"Subsystem": "Motor Controller", "Part Name": "IGBT Module", "Manufacturer": "ON Semi"},
+    "wslp2512r0100fe": {"Subsystem": "Motor Controller", "Part Name": "Current Sense Resistor", "Manufacturer": "Vishay"},
     "bq76952": {"Subsystem": "BMS", "Part Name": "Battery Monitor", "Manufacturer": "Texas Instruments"},
-
-    # Capacitors - Detailed
+    
+    # General Purpose Components
+    "irfz44n": {"Subsystem": "General", "Part Name": "MOSFET", "Manufacturer": "Infineon"},
+    "1n4007": {"Subsystem": "General", "Part Name": "Diode", "Manufacturer": "Multiple"},
+    "fh28-10s-0.5sh(05)": {"Manufacturer": "Hirose Electric Co Ltd", "Part Name": "Connector", "Subsystem": "General"},
     "gcm155l81e104ke02d": {"Manufacturer": "Murata", "Product Category": "MLCC - SMD/SMT", "Capacitance": "0.1 uF", "Voltage Rating DC": "25 VDC", "Dielectric": "X8L", "Tolerance": "10 %", "Case Code": "0402", "Min Temp": "-55 C", "Max Temp": "+150 C", "Qualification": "AEC-Q200"},
     "cga3e3x7s1a225k080ae": {"Manufacturer": "TDK", "Product Category": "MLCC - SMD/SMT", "Capacitance": "2.2 uF", "Voltage Rating DC": "10 VDC", "Dielectric": "X7S", "Tolerance": "10 %", "Case Code": "0603", "Qualification": "AEC-Q200"},
-    "edk476m050s9haa": {"Manufacturer": "KEMET", "Product Category": "Aluminum Electrolytic", "Capacitance": "47 uF", "Voltage Rating DC": "50 VDC", "Tolerance": "20 %", "Min Temp": "-40 C", "Max Temp": "+105 C"},
-    
-    # Diodes - Detailed
-    "d5v0h1b2lpq-7b": {"Manufacturer": "Diodes Inc.", "Product Category": "ESD Protection Diode", "Peak Pulse Power": "30 W", "Breakdown Voltage": "6V", "Package": "DFN1006", "Qualification": "AEC-Q101"},
-    "b340bq-13-f": {"Manufacturer": "Diodes Inc.", "Product Category": "Schottky Diode", "Forward Current": "3A", "Reverse Voltage": "40V", "Package": "SMB", "Qualification": "AEC-Q101"},
-    
-    # Inductors & Ferrites
-    "74279262": {"Manufacturer": "Würth Elektronik", "Product Category": "Ferrite Bead", "Impedance": "220 Ohm @ 100 MHz", "Current Rating": "3A", "Package": "0805"},
-    "spm7054vt-220m-d": {"Manufacturer": "TDK", "Product Category": "Power Inductor", "Inductance": "22 uH", "Current Rating": "2.5A", "Package": "SMD", "Qualification": "AEC-Q200"},
-
-    # MOSFETs
-    "irfz44n": {"Subsystem": "General", "Part Name": "MOSFET", "Manufacturer": "Infineon", "Voltage": "55V", "Current": "49A"},
-    "rq3g270bjfratcb": {"Manufacturer": "Rohm", "Product Category": "MOSFET", "Voltage": "12V", "Current": "27A", "Package": "HSMT8"},
-
-    # Other Components (with placeholders - data to be filled from datasheets)
-    "1n4007": {"Subsystem": "General", "Part Name": "Diode", "Manufacturer": "Multiple"},
-    "fh28-10s-0.5sh(05)": {"Manufacturer": "Hirose", "part_name": "Connector", "subsystem": "General"},
-    "zldo1117qg33ta": {"Manufacturer": "Diodes Incorporated", "part_name": "LDO Regulator", "subsystem": "General"},
-    "pca9306idcurq1": {"Manufacturer": "Texas Instruments", "part_name": "Level Translator", "subsystem": "General"},
-    "iso1042bqdwvq1": {"Manufacturer": "Texas Instruments", "part_name": "CAN Transceiver", "subsystem": "General"},
-    "iam-20680ht": {"Manufacturer": "TDK InvenSense", "part_name": "IMU Sensor", "subsystem": "General"},
-    "attiny1616-szt-vao": {"Manufacturer": "Microchip", "part_name": "MCU", "subsystem": "General"},
-    "qmc5883l": {"Manufacturer": "QST", "part_name": "Magnetometer", "subsystem": "General"},
-    "y4ete00a0aa": {"Manufacturer": "Quectel", "part_name": "LTE Module", "subsystem": "General"},
-    "yf0023aa": {"Manufacturer": "Quectel", "part_name": "Wi-Fi/BT Antenna", "subsystem": "General"},
-    "mb9df125": {"Subsystem": "Instrument Cluster", "Part Name": "MCU with Graphics", "Manufacturer": "Spansion (Cypress)"},
-    "veml6031x00": {"Subsystem": "ALS Board", "Part Name": "Ambient Light Sensor", "Manufacturer": "Vishay"},
+    "grt1555c1e220ja02j": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt155r61a475me13d": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt31cr61a476ke13l": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "cga3e1x7r1e105k080ac": {"Manufacturer": "TDK Corporation", "Part Name": "Capacitor", "Subsystem": "General"},
+    "cga2b2c0g1h180j050ba": {"Manufacturer": "TDK Corporation", "Part Name": "Capacitor", "Subsystem": "General"},
+    "c0402c103k4racauto": {"Manufacturer": "KEMET", "Part Name": "Capacitor", "Subsystem": "General"},
+    "gcm1555c1h101ja16d": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt155r71h104ke01d": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt21br61e226me13l": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt1555c1h150fa02d": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "0402yc222j4t2a": {"Manufacturer": "KYOCERA AVX", "Part Name": "Capacitor", "Subsystem": "General"},
+    "gcm1555c1h560fa16d": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt1555c1h330fa02d": {"Manufacturer": "Murata Electronics North America", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt188c81a106me13d": {"Manufacturer": "Murata Electronics North America", "Part Name": "Capacitor", "Subsystem": "General"},
+    "umk212b7105kght": {"Manufacturer": "Taiyo Yuden", "Part Name": "Capacitor", "Subsystem": "General"},
+    "c1206c104k5racauto": {"Manufacturer": "KEMET", "Part Name": "Capacitor", "Subsystem": "General"},
+    "grt31cr61h106ke01k": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "mcasu105sb7103kfna01": {"Manufacturer": "Taiyo Yuden", "Part Name": "Capacitor", "Subsystem": "General"},
+    "c0402c333k4racauto": {"Manufacturer": "KEMET", "Part Name": "Capacitor", "Subsystem": "General"},
+    "cl10b474ko8vpnc": {"Manufacturer": "Samsung Electro-Mechanics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "gcm155r71c224ke02d": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "gcm155r71h102ka37j": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "50tpv330m10x10.5": {"Manufacturer": "Rubycon", "Part Name": "Capacitor", "Subsystem": "General"},
+    "cl31b684kbhwpne": {"Manufacturer": "Samsung Electro-Mechanics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "gcm155r71h272ka37d": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "edk476m050s9haa": {"Manufacturer": "KEMET", "Part Name": "Capacitor", "Subsystem": "General"},
+    "gcm155r71h332ka37j": {"Manufacturer": "Murata Electronics", "Part Name": "Capacitor", "Subsystem": "General"},
+    "a768ke336m1hlae042": {"Manufacturer": "KEMET", "Part Name": "Capacitor", "Subsystem": "General"},
+    "ac0402jrx7r9bb152": {"Manufacturer": "YAGEO", "Part Name": "Resistor", "Subsystem": "General"},
+    "d5v0h1b2lpq-7b": {"Manufacturer": "Diodes Incorporated", "Part Name": "Diode", "Subsystem": "General"},
+    "szmmbz9v1alt3g": {"Manufacturer": "onsemi", "Part Name": "Diode", "Subsystem": "General"},
+    "d24v0s1u2tq-7": {"Manufacturer": "Diodes Incorporated", "Part Name": "Diode", "Subsystem": "General"},
+    "b340bq-13-f": {"Manufacturer": "Diodes Incorporated", "Part Name": "Diode", "Subsystem": "General"},
+    "tld8s22ah": {"Manufacturer": "Taiwan Semiconductor", "Part Name": "Diode", "Subsystem": "General"},
+    "b260aq-13-f": {"Manufacturer": "Diodes Incorporated", "Part Name": "Diode", "Subsystem": "General"},
+    "rb530sm-40fht2r": {"Manufacturer": "Rohm Semiconductor", "Part Name": "Diode", "Subsystem": "General"},
+    "74279262": {"Manufacturer": "Würth Elektronik", "Part Name": "Ferrite Bead", "Subsystem": "General"},
+    "742792641": {"Manufacturer": "Würth Elektronik", "Part Name": "Ferrite Bead", "Subsystem": "General"},
+    "742792625": {"Manufacturer": "Würth Elektronik", "Part Name": "Ferrite Bead", "Subsystem": "General"},
+    "742792150": {"Manufacturer": "Würth Elektronik", "Part Name": "Ferrite Bead", "Subsystem": "General"},
+    "78279220800": {"Manufacturer": "Würth Elektronik", "Part Name": "Ferrite Bead", "Subsystem": "General"},
+    "voma617a-4x001t": {"Manufacturer": "Vishay Semiconductor Opto Division", "Part Name": "Optocoupler", "Subsystem": "General"},
+    "534260610": {"Manufacturer": "Molex", "Part Name": "Connector", "Subsystem": "General"},
+    "fh52-40s-0.5sh(99)": {"Manufacturer": "Hirose Electric Co Ltd", "Part Name": "Connector", "Subsystem": "General"},
+    "x8821wv-06l-n0sn": {"Manufacturer": "XKB", "Part Name": "Connector", "Subsystem": "General"},
+    "744235510": {"Manufacturer": "Würth Elektronik", "Part Name": "Inductor", "Subsystem": "General"},
+    "lqw15an56nj8zd": {"Manufacturer": "Murata Electronics", "Part Name": "Inductor", "Subsystem": "General"},
+    "spm7054vt-220m-d": {"Manufacturer": "TDK Corporation", "Part Name": "Inductor", "Subsystem": "General"},
+    "744273801": {"Manufacturer": "Wurth Electronics Inc", "Part Name": "Inductor", "Subsystem": "General"},
+    "74404084068": {"Manufacturer": "Würth Elektronik", "Part Name": "Inductor", "Subsystem": "General"},
+    "744231091": {"Manufacturer": "Würth Elektronik", "Part Name": "Inductor", "Subsystem": "General"},
+    "mlz2012m6r8htd25": {"Manufacturer": "TDK Corporation", "Part Name": "Inductor", "Subsystem": "General"},
+    "rq3g270bjfratcb": {"Manufacturer": "Rohm Semiconductor", "Part Name": "MOSFET", "Subsystem": "General"},
+    "pja138k-au_r1_000a1": {"Manufacturer": "Panjit International Inc.", "Part Name": "MOSFET", "Subsystem": "General"},
+    "dmp2070uq-7": {"Manufacturer": "Diodes Incorporated", "Part Name": "MOSFET", "Subsystem": "General"},
+    "ac0402jr-070rl": {"Manufacturer": "YAGEO", "Part Name": "Resistor", "Subsystem": "General"},
+    "ac0402fr-07100kl": {"Manufacturer": "YAGEO", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0402ft158k": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0402ft30k0": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0402ft127k": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmc10k204fth": {"Manufacturer": "KAMAYA", "Part Name": "Resistor", "Subsystem": "General"},
+    "erj-2rkf2201x": {"Manufacturer": "Panasonic Electronic Components", "Part Name": "Resistor", "Subsystem": "General"},
+    "erj-2rkf1002x": {"Manufacturer": "Panasonic Electronic Components", "Part Name": "Resistor", "Subsystem": "General"},
+    "wr04x1004ftl": {"Manufacturer": "Walsin Technology Corporation", "Part Name": "Resistor", "Subsystem": "General"},
+    "wr04x10r0ftl": {"Manufacturer": "Walsin Technology Corporation", "Part Name": "Resistor", "Subsystem": "General"},
+    "rc0603fr-0759rl": {"Manufacturer": "YAGEO", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmc1/16jptp": {"Manufacturer": "Kamaya Inc.", "Part Name": "Resistor", "Subsystem": "General"},
+    "ac0402fr-07100rl": {"Manufacturer": "YAGEO", "Part Name": "Resistor", "Subsystem": "General"},
+    "ac0402fr-076k04l": {"Manufacturer": "YAGEO", "Part Name": "Resistor", "Subsystem": "General"},
+    "ac0402fr-07510rl": {"Manufacturer": "YAGEO", "Part Name": "Resistor", "Subsystem": "General"},
+    "crgcq0402f56k": {"Manufacturer": "TE Connectivity Passive Product", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0402ft24k9": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0402ft5k36": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0603ft12k0": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0402ft210k": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "ltr18ezpfsr015": {"Manufacturer": "Rohm Semiconductor", "Part Name": "Resistor", "Subsystem": "General"},
+    "erj-pa2j102x": {"Manufacturer": "Panasonic Electronic Components", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0402ft5k10": {"Manufacturer": "Stackpole Electronics Inc", "Part Name": "Resistor", "Subsystem": "General"},
+    "rmcf0603ft100r": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
+    "ac0402jr-074k7l": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
+    "crf0805-fz-r010elf": {"manufacturer": "Bourns Inc.", "part_name": "Resistor", "subsystem": "General"},
+    "rmcf0402ft3k16": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
+    "rmcf0402ft3k48": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
+    "rmcf0402ft1k50": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
+    "rmcf0402ft4k02": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
+    "rmcf1206zt0r00": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
+    "rmcf0402ft402k": {"manufacturer": "Stackpole Electronics Inc", "part_name": "Resistor", "subsystem": "General"},
+    "ac0603fr-7w20kl": {"manufacturer": "YAGEO", "part_name": "Resistor", "subsystem": "General"},
+    "h164yp": {"manufacturer": "AGENEW", "part_name": "Unknown", "subsystem": "General"},
+    "zldo1117qg33ta": {"manufacturer": "Diodes Incorporated", "part_name": "LDO Regulator", "subsystem": "General"},
+    "ap63357qzv-7": {"manufacturer": "Diodes Incorporated", "part_name": "Switching Regulator", "subsystem": "General"},
+    "pca9306idcurq1": {"manufacturer": "Texas Instruments", "part_name": "Level Translator", "subsystem": "General"},
+    "mcp2518fdt-e/sl": {"manufacturer": "Microchip Technology", "part_name": "CAN Controller", "subsystem": "General"},
+    "iso1042bqdwvq1": {"manufacturer": "Texas Instruments", "part_name": "CAN Transceiver", "subsystem": "General"},
+    "pesd2canfd27v-tr": {"manufacturer": "Nexperia USA Inc.", "part_name": "ESD Protection", "subsystem": "General"},
+    "lt8912b": {"manufacturer": "Lontium", "part_name": "MIPI DSI/CSI-2 Bridge", "subsystem": "General"},
+    "sn74lv1t34qdckrq1": {"manufacturer": "Texas Instruments", "part_name": "Buffer", "subsystem": "General"},
+    "ncp164csnadjt1g": {"manufacturer": "onsemi", "part_name": "LDO Regulator", "subsystem": "General"},
+    "20279-001e-03": {"manufacturer": "I-PEX", "part_name": "Connector", "subsystem": "General"},
+    "ncv8161asn180t1g": {"manufacturer": "onsemi", "part_name": "LDO Regulator", "subsystem": "General"},
+    "drtr5v0u2sr-7": {"manufacturer": "Diodes Incorporated", "part_name": "ESD Protection", "subsystem": "General"},
+    "ncv8161asn330t1g": {"manufacturer": "onsemi", "part_name": "LDO Regulator", "subsystem": "General"},
+    "ecmf04-4hswm10y": {"manufacturer": "STMicroelectronics", "part_name": "Common Mode Filter", "subsystem": "General"},
+    "nxs0102dc-q100h": {"manufacturer": "Nexperia USA Inc.", "part_name": "Level Translator", "subsystem": "General"},
+    "cf0505xt-1wr3": {"manufacturer": "MORNSUN", "part_name": "DC/DC Converter", "subsystem": "General"},
+    "iam-20680ht": {"manufacturer": "TDK InvenSense", "part_name": "IMU Sensor", "subsystem": "General"},
+    "attiny1616-szt-vao": {"manufacturer": "Microchip", "part_name": "MCU", "subsystem": "General"},
+    "tlv9001qdckrq1": {"manufacturer": "Texas Instruments", "part_name": "Op-Amp", "subsystem": "General"},
+    "qmc5883l": {"manufacturer": "QST", "part_name": "Magnetometer", "subsystem": "General"},
+    "lm76202qpwprq1": {"manufacturer": "Texas Instruments", "part_name": "Ideal Diode Controller", "subsystem": "General"},
+    "bd83a04efv-me2": {"manufacturer": "Rohm Semiconductor", "part_name": "LED Driver", "subsystem": "General"},
+    "ecs-200-12-33q-jes-tr": {"manufacturer": "ECS Inc.", "part_name": "Crystal", "subsystem": "General"},
+    "ecs-250-12-33q-jes-tr": {"manufacturer": "ECS Inc.", "part_name": "Crystal", "subsystem": "General"},
+    "aggbp.25a.07.0060a": {"manufacturer": "Toaglas", "part_name": "GNSS Antenna", "subsystem": "General"},
+    "y4ete00a0aa": {"manufacturer": "Quectel", "part_name": "LTE Module", "subsystem": "General"},
+    "yf0023aa": {"manufacturer": "Quectel", "part_name": "Wi-Fi/BT Antenna", "subsystem": "General"},
+    "mb9df125": {"subsystem": "Instrument Cluster", "part_name": "MCU with Graphics", "manufacturer": "Spansion (Cypress)"},
+    "veml6031x00": {"subsystem": "ALS Board", "part_name": "Ambient Light Sensor", "manufacturer": "Vishay"},
+    "01270019-00": {"subsystem": "VIC Module", "part_name": "ANTENNA GPS", "manufacturer": "Unknown"},
+    "01270020-00": {"subsystem": "VIC Module", "part_name": "ANTENNA WIFI", "manufacturer": "Unknown"},
+    "01270021-00": {"subsystem": "VIC Module", "part_name": "ANTENNA LTE", "manufacturer": "Unknown"},
+    "p0024-03": {"subsystem": "VIC Module", "part_name": "PCBA BOARD", "manufacturer": "Unknown"},
+    "01270018-00": {"subsystem": "VIC Module", "part_name": "SENSOR ALS-PCBA", "manufacturer": "Unknown"},
+    "01270010-02": {"subsystem": "VIC Module", "part_name": "TFT LCD WITH COVER GLASS", "manufacturer": "Unknown"},
 }
 
 
@@ -137,26 +239,28 @@ def intelligent_parser(text: str):
             r'^(.+?)\s+(Failed|Passed)$',
         ]
 
-        match = None
-        for p in patterns:
+        match_found = False
+        for i, p in enumerate(patterns):
             match = re.match(p, line, re.I)
             if match:
+                groups = match.groups()
+                if i == 0:
+                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["passed", "success"] else "FAIL", "Actual": groups[2].strip()})
+                elif i == 1:
+                    result_str = groups[1].lower()
+                    result = "PASS" if "passed" in result_str or "success" in result_str else "FAIL" if "failed" in result_str else "INFO"
+                    test_data.update({"TestName": groups[0].strip(), "Result": result, "Actual": groups[1].strip()})
+                elif i == 2:
+                     test_data.update({"TestName": groups[0].replace("_", " ").strip(), "Result": groups[1].upper()})
+                elif i == 3:
+                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["success", "passed"] else "FAIL"})
+                elif i == 4:
+                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() == "passed" else "FAIL"})
+                
+                match_found = True
                 break
         
-        if match:
-            groups = match.groups()
-            if len(groups) == 3: # Pattern 1
-                test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["passed", "success"] else "FAIL", "Actual": groups[2].strip()})
-            elif len(groups) == 2: # Patterns 2, 3, 4, 5
-                result_str = groups[1].lower()
-                if "passed" in result_str or "success" in result_str:
-                    test_data["Result"] = "PASS"
-                elif "failed" in result_str:
-                    test_data["Result"] = "FAIL"
-                else:
-                    test_data["Result"] = "INFO"
-                test_data.update({"TestName": groups[0].strip(), "Actual": groups[1].strip()})
-
+        if match_found:
             for keyword, standard in KEYWORD_TO_STANDARD_MAP.items():
                 if keyword in test_data["TestName"].lower():
                     test_data["Standard"] = standard
@@ -264,7 +368,6 @@ elif option == "Component Information":
         component = st.session_state.found_component
         st.markdown(f"### Details for: {part_q.upper()}")
         
-        # Filter out keys with no meaningful value before displaying
         display_data = {k.replace('_', ' ').title(): v for k, v in component.items() if pd.notna(v)}
         
         data_items = list(display_data.items())
