@@ -50,7 +50,7 @@ def get_image_as_base64(path):
             return base64.b64encode(img_file.read()).decode('utf-8')
     return None
 
-# Make sure the filename matches the uploaded logo file
+# Ensure the filename matches your uploaded logo file
 logo_base64 = get_image_as_base64("logo.png.jpg") 
 
 if logo_base64:
@@ -323,6 +323,11 @@ def intelligent_parser(text: str):
                 break
         
         if match_found:
+            KEYWORD_TO_STANDARD_MAP = {
+                "gps": "NMEA 0183", "gnss": "3GPP", "bluetooth": "Bluetooth Core Specification", "wifi": "IEEE 802.11",
+                "lte": "3GPP LTE", "can": "ISO 11898", "sensor": "AEC-Q104", "ip rating": "IEC 60529",
+                "short circuit": "AIS-156 / IEC 62133", "overcharge": "AIS-156", "vibration": "IEC 60068-2-6"
+            }
             for keyword, standard in KEYWORD_TO_STANDARD_MAP.items():
                 if keyword in test_data["TestName"].lower():
                     test_data["Standard"] = standard
