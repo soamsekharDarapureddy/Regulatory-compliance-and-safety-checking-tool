@@ -50,6 +50,7 @@ def get_image_as_base64(path):
             return base64.b64encode(img_file.read()).decode('utf-8')
     return None
 
+# Make sure the filename matches the uploaded logo file
 logo_base64 = get_image_as_base64("logo.png.jpg") 
 
 if logo_base64:
@@ -293,28 +294,41 @@ def intelligent_parser(text: str):
         test_data = {"TestName": "Not found", "Result": "N/A", "Actual": "Not found", "Standard": "Not found"}
         
         patterns = [
-            r'^(.*?)\s*-->\s*(Passed|Failed|Success)\s*-->\s*(.+)$',r'^(.*?)\s*-->\s*(.+)$',r'^\d+:\s*([A-Z_]+):\s*"([A-Z]+)"$',
-            r'^(.+?)\s+is\s+(success|failure|passed|failed)$',r'^(.+?)\s+(Failed|Passed)$',
+            r'^(.*?)\s*-->\s*(Passed|Failed|Success)\s*-->\s*(.+)$',
+            r'^(.*?)\s*-->\s*(.+)$',
+            r'^\d+:\s*([A-Z_]+):\s*"([A-Z]+)"$',
+            r'^(.+?)\s+is\s+(success|failure|passed|failed)$',
+            r'^(.+?)\s+(Failed|Passed)$',
         ]
+
         match_found = False
         for i, p in enumerate(patterns):
             match = re.match(p, line, re.I)
             if match:
                 groups = match.groups()
-                if i == 0: test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["passed", "success"] else "FAIL", "Actual": groups[2].strip()})
+                if i == 0:
+                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["passed", "success"] else "FAIL", "Actual": groups[2].strip()})
                 elif i == 1:
                     result_str = groups[1].lower()
                     result = "PASS" if "passed" in result_str or "success" in result_str else "FAIL" if "failed" in result_str else "INFO"
                     test_data.update({"TestName": groups[0].strip(), "Result": result, "Actual": groups[1].strip()})
-                elif i == 2: test_data.update({"TestName": groups[0].replace("_", " ").strip(), "Result": groups[1].upper()})
-                elif i == 3: test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["success", "passed"] else "FAIL"})
-                elif i == 4: test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() == "passed" else "FAIL"})
+                elif i == 2:
+                     test_data.update({"TestName": groups[0].replace("_", " ").strip(), "Result": groups[1].upper()})
+                elif i == 3:
+                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["success", "passed"] else "FAIL"})
+                elif i == 4:
+                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() == "passed" else "FAIL"})
+                
                 match_found = True
                 break
+        
         if match_found:
             for keyword, standard in KEYWORD_TO_STANDARD_MAP.items():
-                if keyword in test_data["TestName"].lower(): test_data["Standard"] = standard
+                if keyword in test_data["TestName"].lower():
+                    test_data["Standard"] = standard
+                    break
             extracted_tests.append(test_data)
+            
     return extracted_tests
 
 def parse_report(uploaded_file):
@@ -328,8 +342,10 @@ def parse_report(uploaded_file):
             df.rename(columns=rename_map, inplace=True)
             return df.to_dict('records')
         elif file_extension == '.pdf':
-             with pdfplumber.open(uploaded_file) as pdf: content = "".join(page.extract_text() + "\n" for page in pdf.pages if page.extract_text())
-        else: content = uploaded_file.getvalue().decode('utf-8', errors='ignore')
+             with pdfplumber.open(uploaded_file) as pdf:
+                content = "".join(page.extract_text() + "\n" for page in pdf.pages if page.extract_text())
+        else:
+            content = uploaded_file.getvalue().decode('utf-8', errors='ignore')
         return intelligent_parser(content)
     except Exception as e:
         st.error(f"An error occurred while parsing: {e}")
@@ -339,7 +355,8 @@ def display_test_card(test_case, color):
     details = f"<b>🧪 Test:</b> {test_case.get('TestName', 'N/A')}<br>"
     for key, label in {'Standard': '📘 Standard', 'Expected': '🎯 Expected', 'Actual': '📌 Actual', 'Description': '💬 Description'}.items():
         value = test_case.get(key)
-        if pd.notna(value) and str(value).strip() and str(value).lower() not in ['—', 'nan']: details += f"<b>{label}:</b> {value}<br>"
+        if pd.notna(value) and str(value).strip() and str(value).lower() not in ['—', 'nan']:
+            details += f"<b>{label}:</b> {value}<br>"
     st.markdown(f"<div class='card' style='border-left-color:{color};'>{details}</div>", unsafe_allow_html=True)
 
 # ---- Streamlit App Layout ----
@@ -350,11 +367,14 @@ st.sidebar.info("An integrated tool for automotive compliance.")
 if option == "Component Information":
     st.subheader("Key Component Information", anchor=False)
     st.caption("Look up parts from the fully populated component database.")
+    
     part_q = st.text_input("Quick Lookup (part number)", placeholder="e.g., gcm155l81e104ke02d").lower().strip()
+    
     if st.button("Find Component"):
         if part_q:
             db_for_search = {k.lower(): v for k, v in UNIFIED_COMPONENT_DB.items()}
             result = db_for_search.get(part_q)
+
             if result:
                 st.session_state.found_component = result
                 st.session_state.searched_part = part_q
@@ -362,10 +382,12 @@ if option == "Component Information":
             else:
                 st.session_state.found_component = None
                 st.warning("Part number not found in the database.")
+    
     if st.session_state.get('found_component'):
         st.markdown("---")
         component = st.session_state.found_component
         st.markdown(f"### Details for: {st.session_state.searched_part.upper()}")
+
         if st.session_state.searched_part == 'gcm155l81e104ke02d':
             component.setdefault('Part Name', '0.1µF 25V X8L 0402 Capacitor')
             component.setdefault('Use', 'General Purpose Decoupling')
@@ -373,46 +395,76 @@ if option == "Component Information":
             component.setdefault('Type', 'Ceramic')
             component.setdefault('Package Case', '0402')
             component.setdefault('Operating Temp Range', '-55°C to 150°C')
-        fields_order = ["Part Number", "Part Name", "Manufacturer", "Use", "Category", "Type", "Capacitance", "Voltage Rating DC", "Tolerance", "Dielectric", "Package Case", "Operating Temp Range"]
+
+        fields_order = [
+            "Part Number", "Part Name", "Manufacturer", "Use", "Category", "Type",
+            "Capacitance", "Voltage Rating DC", "Tolerance", "Dielectric", "Package Case", "Operating Temp Range"
+        ]
+
         display_data = {field: component.get(field, "") for field in fields_order}
         display_data['Part Number'] = st.session_state.searched_part
+
         data_items = list(display_data.items())
+        
         col1, col2 = st.columns(2)
         midpoint = (len(data_items) + 1) // 2
+        
         with col1:
             for key, value in data_items[midpoint:]:
-                st.markdown(f"**{key}**"); st.markdown(str(value) if str(value).strip() else " "); st.markdown("---")
+                st.markdown(f"**{key}**")
+                st.markdown(str(value) if str(value).strip() else " ")
+                st.markdown("---")
+
         with col2:
             for key, value in data_items[:midpoint]:
-                st.markdown(f"**{key}**"); st.markdown(str(value) if str(value).strip() else " "); st.markdown("---")
+                st.markdown(f"**{key}**")
+                st.markdown(str(value) if str(value).strip() else " ")
+                st.markdown("---")
 
 # --- UPGRADED Test Requirement Generation Module ---
 elif option == "Test Requirement Generation":
     st.subheader("Generate Detailed Test Requirements", anchor=False)
     st.caption("Enter keywords (e.g., 'water', 'vibration') to generate detailed automotive test procedures.")
+    
     available_tests = list(TEST_CASE_KNOWLEDGE_BASE.keys())
+    
     text_input = st.text_input("Enter a test case keyword", placeholder=f"Try: {', '.join(available_tests)}")
+
     if st.button("Generate Requirements"):
         user_case = text_input.strip().lower()
         if user_case:
             st.session_state.requirements_generated += 1
+            
             matched_test = None
             for key, test_data in TEST_CASE_KNOWLEDGE_BASE.items():
-                if user_case in key: matched_test = test_data; break
+                if user_case in key:
+                    matched_test = test_data
+                    break
+            
             if matched_test:
                 st.markdown(f"#### Generated Procedure for: **{matched_test.get('name', 'N/A')}**")
+                
                 st.markdown(f"""
                 <div class='card' style='border-left-color:#0056b3;'>
                     <p><strong>Standard:</strong> {matched_test.get('standard', 'N/A')}</p>
                     <p><strong>Description:</strong> {matched_test.get('description', 'N/A')}</p>
+                    
                     <p><strong>Test Procedure:</strong></p>
-                    <ul>{''.join(f"<li>{step}</li>" for step in matched_test.get('procedure', []))}</ul>
+                    <ul>
+                        {''.join(f"<li>{step}</li>" for step in matched_test.get('procedure', []))}
+                    </ul>
+                    
                     <p><strong>Key Parameters:</strong></p>
-                    <ul>{''.join(f"<li><strong>{param}:</strong> {value}</li>" for param, value in matched_test.get('parameters', {}).items())}</ul>
+                    <ul>
+                        {''.join(f"<li><strong>{param}:</strong> {value}</li>" for param, value in matched_test.get('parameters', {}).items())}
+                    </ul>
+
                     <p><strong>Required Equipment:</strong> {', '.join(matched_test.get('equipment', ['N/A']))}</p>
                 </div>
                 """, unsafe_allow_html=True)
-            else: st.warning(f"No detailed procedure found for '{user_case}'. Please try one of the following keywords: {', '.join(available_tests)}")
+            else:
+                st.warning(f"No detailed procedure found for '{user_case}'. Please try one of the following keywords: {', '.join(available_tests)}")
+
 
 # --- Test Report Verification Module ---
 elif option == "Test Report Verification":
@@ -426,7 +478,9 @@ elif option == "Test Report Verification":
             passed = [t for t in parsed_data if "PASS" in str(t.get("Result", "")).upper()]
             failed = [t for t in parsed_data if "FAIL" in str(t.get("Result", "")).upper()]
             others = [t for t in parsed_data if not ("PASS" in str(t.get("Result", "")).upper() or "FAIL" in str(t.get("Result", "")).upper())]
+            
             st.markdown(f"### Found {len(passed)} Passed, {len(failed)} Failed, and {len(others)} Other items.")
+            
             if passed:
                 with st.expander("✅ Passed Cases", expanded=True):
                     for t in passed: display_test_card(t, '#1e9f50')
@@ -436,7 +490,9 @@ elif option == "Test Report Verification":
             if others:
                 with st.expander("ℹ️ Other/Informational Items", expanded=False):
                     for t in others: display_test_card(t, '#808080')
-        else: st.warning("No recognizable data was extracted.")
+        else:
+            st.warning("No recognizable data was extracted.")
+
 
 # --- Dashboard & Analytics Module ---
 elif option == "Dashboard & Analytics":
