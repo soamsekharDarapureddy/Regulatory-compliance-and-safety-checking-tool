@@ -16,12 +16,13 @@ except ImportError:
 # === Branding & Page Config ===
 st.set_page_config(page_title="Regulatory Compliance & Safety Tool", layout="wide")
 
-# --- IMPROVED LOGO DISPLAY ---
-# This method is more robust. Ensure 'logo.png.jpg' is in the same folder as this script.
+# --- IMPROVED AND SIMPLIFIED LOGO DISPLAY ---
+# This method uses a simplified filename 'logo.jpg'.
+# Ensure 'logo.jpg' is in the same folder as this script.
 try:
-    st.image("logo.png.jpg", width=150)
+    st.image("logo.jpg", width=150)
 except Exception as e:
-    st.error(f"Error loading logo: {e}. Make sure 'logo.png.jpg' is in the same directory as the script.")
+    st.error(f"Error loading logo: {e}. Make sure you have renamed your logo to 'logo.jpg' and it's in the same directory as this script.")
 
 st.title("Regulatory Compliance & Safety Verification Tool")
 
