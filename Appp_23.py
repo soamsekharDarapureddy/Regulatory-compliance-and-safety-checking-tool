@@ -44,15 +44,11 @@ with col2:
 # === Advanced CSS for Styling ===
 st.markdown("""
 <style>
-:root { --accent:#0056b3; --panel:#f3f8fc; --shadow:#cfe7ff; }
-.card{background:#fff; border-radius:10px; padding:12px 14px; margin-bottom:10px; border-left:8px solid #c9d6e8;}
+.card{background:#f9f9f9; border-radius:10px; padding:15px; margin-bottom:10px; border-left: 5px solid #0056b3;}
 .small-muted{color:#777; font-size:0.95em;}
 .result-pass{color:#1e9f50; font-weight:700;}
 .result-fail{color:#c43a31; font-weight:700;}
-a {text-decoration: none;}
 .main .block-container { padding-top: 2rem; }
-.card ul { padding-left: 20px; }
-.card li { margin-bottom: 5px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -422,7 +418,7 @@ if option == "Component Information":
                 st.markdown(str(value) if str(value).strip() else " ")
                 st.markdown("---")
 
-# --- UPGRADED Test Requirement Generation Module ---
+# --- CORRECTED Test Requirement Generation Module ---
 elif option == "Test Requirement Generation":
     st.subheader("Generate Detailed Test Requirements", anchor=False)
     st.caption("Enter keywords (e.g., 'water', 'vibration') to generate detailed automotive test procedures.")
@@ -445,24 +441,24 @@ elif option == "Test Requirement Generation":
             if matched_test:
                 st.markdown(f"#### Generated Procedure for: **{matched_test.get('name', 'N/A')}**")
                 
-                st.markdown(f"""
-                <div class='card' style='border-left-color:#0056b3;'>
-                    <p><strong>Standard:</strong> {matched_test.get('standard', 'N/A')}</p>
-                    <p><strong>Description:</strong> {matched_test.get('description', 'N/A')}</p>
+                # Using a styled container for the output
+                with st.container():
+                    st.markdown("<div class='card'>", unsafe_allow_html=True)
                     
-                    <p><strong>Test Procedure:</strong></p>
-                    <ul>
-                        {''.join(f"<li>{step}</li>" for step in matched_test.get('procedure', []))}
-                    </ul>
+                    st.markdown(f"**Standard:** {matched_test.get('standard', 'N/A')}")
+                    st.markdown(f"**Description:** {matched_test.get('description', 'N/A')}")
                     
-                    <p><strong>Key Parameters:</strong></p>
-                    <ul>
-                        {''.join(f"<li><strong>{param}:</strong> {value}</li>" for param, value in matched_test.get('parameters', {}).items())}
-                    </ul>
+                    st.markdown("**Test Procedure:**")
+                    for step in matched_test.get('procedure', []):
+                        st.markdown(f"- {step}")
 
-                    <p><strong>Required Equipment:</strong> {', '.join(matched_test.get('equipment', ['N/A']))}</p>
-                </div>
-                """, unsafe_allow_html=True)
+                    st.markdown("**Key Parameters:**")
+                    for param, value in matched_test.get('parameters', {}).items():
+                        st.markdown(f"- **{param}:** {value}")
+
+                    st.markdown(f"**Required Equipment:** {', '.join(matched_test.get('equipment', ['N/A']))}")
+                    
+                    st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.warning(f"No detailed procedure found for '{user_case}'. Please try one of the following keywords: {', '.join(available_tests)}")
 
