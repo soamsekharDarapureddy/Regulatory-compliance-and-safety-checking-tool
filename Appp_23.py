@@ -16,13 +16,23 @@ except ImportError:
 # === Branding & Page Config ===
 st.set_page_config(page_title="Regulatory Compliance & Safety Tool", layout="wide")
 
-# --- IMPROVED AND SIMPLIFIED LOGO DISPLAY ---
-# This method uses a simplified filename 'logo.jpg'.
-# Ensure 'logo.jpg' is in the same folder as this script.
-try:
-    st.image("logo.jpg", width=150)
-except Exception as e:
-    st.error(f"Error loading logo: {e}. Make sure you have renamed your logo to 'logo.jpg' and it's in the same directory as this script.")
+# --- FINAL, ROBUST LOGO DISPLAY LOGIC ---
+def find_logo_path(possible_names=["logo.jpg", "logo.png", "logo.png.jpg"]):
+    """Searches for a logo file from a list of common names."""
+    for name in possible_names:
+        if os.path.exists(name):
+            return name
+    return None
+
+logo_path = find_logo_path()
+
+if logo_path:
+    try:
+        st.image(logo_path, width=150)
+    except Exception as e:
+        st.error(f"Found logo '{logo_path}' but could not display it. Error: {e}")
+else:
+    st.warning("Logo image not found. Please ensure 'logo.jpg' or 'logo.png' is in the same directory as the script.")
 
 st.title("Regulatory Compliance & Safety Verification Tool")
 
