@@ -5,7 +5,6 @@ import pdfplumber
 import openpyxl
 import re
 import os
-import base64
 
 # To parse .docx files, you need to install python-docx
 try:
@@ -16,6 +15,16 @@ except ImportError:
 
 # === Branding & Page Config ===
 st.set_page_config(page_title="Regulatory Compliance & Safety Tool", layout="wide")
+
+# --- IMPROVED LOGO DISPLAY ---
+# This method is more robust. Ensure 'logo.png.jpg' is in the same folder as this script.
+try:
+    st.image("logo.png.jpg", width=150)
+except Exception as e:
+    st.error(f"Error loading logo: {e}. Make sure 'logo.png.jpg' is in the same directory as the script.")
+
+st.title("Regulatory Compliance & Safety Verification Tool")
+
 
 # === Advanced CSS for Styling ===
 st.markdown("""
@@ -42,29 +51,6 @@ def init_session_state():
         if key not in st.session_state:
             st.session_state[key] = value
 init_session_state()
-
-# === CORRECTED LOGO and HEADER DISPLAY LOGIC ===
-def get_image_as_base64(path):
-    if os.path.exists(path):
-        with open(path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode('utf-8')
-    return None
-
-# Ensure the filename matches your uploaded logo file
-logo_base64 = get_image_as_base64("logo.png.jpg") 
-
-if logo_base64:
-    st.markdown(f"""
-        <div style="display: flex; align-items: center; margin-bottom: 25px;">
-            <img src="data:image/png;base64,{logo_base64}" alt="Logo" style="height: 100px; margin-right: 25px;"/>
-            <div>
-                <h1 style="color:#0056b3; margin: 0; font-size: 2.5em; line-height: 1.1;">Regulatory Compliance</h1>
-                <h2 style="color:#0056b3; margin: 0; font-size: 1.6em; line-height: 1.1;">& Safety Verification Tool</h2>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-else:
-    st.title("Regulatory Compliance & Safety Verification Tool")
 
 
 # === UPGRADED KNOWLEDGE BASE with Detailed Procedures ===
@@ -306,19 +292,14 @@ def intelligent_parser(text: str):
             match = re.match(p, line, re.I)
             if match:
                 groups = match.groups()
-                if i == 0:
-                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["passed", "success"] else "FAIL", "Actual": groups[2].strip()})
+                if i == 0: test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["passed", "success"] else "FAIL", "Actual": groups[2].strip()})
                 elif i == 1:
                     result_str = groups[1].lower()
                     result = "PASS" if "passed" in result_str or "success" in result_str else "FAIL" if "failed" in result_str else "INFO"
                     test_data.update({"TestName": groups[0].strip(), "Result": result, "Actual": groups[1].strip()})
-                elif i == 2:
-                     test_data.update({"TestName": groups[0].replace("_", " ").strip(), "Result": groups[1].upper()})
-                elif i == 3:
-                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["success", "passed"] else "FAIL"})
-                elif i == 4:
-                    test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() == "passed" else "FAIL"})
-                
+                elif i == 2: test_data.update({"TestName": groups[0].replace("_", " ").strip(), "Result": groups[1].upper()})
+                elif i == 3: test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() in ["success", "passed"] else "FAIL"})
+                elif i == 4: test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() == "passed" else "FAIL"})
                 match_found = True
                 break
         
