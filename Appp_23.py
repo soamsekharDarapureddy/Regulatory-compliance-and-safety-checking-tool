@@ -16,25 +16,29 @@ except ImportError:
 # === Branding & Page Config ===
 st.set_page_config(page_title="Regulatory Compliance & Safety Tool", layout="wide")
 
-# --- FINAL, ROBUST LOGO DISPLAY LOGIC ---
-def find_logo_path(possible_names=["logo.jpg", "logo.png", "logo.png.jpg"]):
-    """Searches for a logo file from a list of common names."""
-    for name in possible_names:
-        if os.path.exists(name):
-            return name
-    return None
+# --- FINAL, CORRECTED LOGO AND TITLE LAYOUT ---
+col1, col2 = st.columns([1, 4])  # Create two columns, the second being wider
 
-logo_path = find_logo_path()
+with col1:
+    # This code finds and displays the logo in the first (left) column.
+    def find_logo_path(possible_names=["logo.jpg", "logo.png", "logo.png.jpg"]):
+        for name in possible_names:
+            if os.path.exists(name):
+                return name
+        return None
 
-if logo_path:
-    try:
-        st.image(logo_path, width=150)
-    except Exception as e:
-        st.error(f"Found logo '{logo_path}' but could not display it. Error: {e}")
-else:
-    st.warning("Logo image not found. Please ensure 'logo.jpg' or 'logo.png' is in the same directory as the script.")
+    logo_path = find_logo_path()
+    if logo_path:
+        try:
+            st.image(logo_path, width=150)
+        except Exception as e:
+            st.error(f"Error loading logo: {e}")
+    else:
+        st.warning("Logo not found.")
 
-st.title("Regulatory Compliance & Safety Verification Tool")
+with col2:
+    # This code displays the title in the second (right) column.
+    st.title("Regulatory Compliance & Safety Verification Tool")
 
 
 # === Advanced CSS for Styling ===
