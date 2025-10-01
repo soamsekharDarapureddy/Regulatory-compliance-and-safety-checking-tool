@@ -49,6 +49,14 @@ st.markdown("""
 .result-pass{color:#1e9f50; font-weight:700;}
 .result-fail{color:#c43a31; font-weight:700;}
 .main .block-container { padding-top: 2rem; }
+.attr-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 5px;
+    font-size: 1.1em;
+}
+.attr-item strong {
+    color: #333;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -364,7 +372,7 @@ def display_test_card(test_case, color):
 option = st.sidebar.radio("Navigate", ("Component Information", "Test Requirement Generation", "Test Report Verification", "Dashboard & Analytics"))
 st.sidebar.info("An integrated tool for automotive compliance.")
 
-# --- Component Information Module (with swapped columns) ---
+# --- Component Information Module (FINAL - ROYAL LOOK) ---
 if option == "Component Information":
     st.subheader("Key Component Information", anchor=False)
     st.caption("Look up parts from the fully populated component database.")
@@ -388,28 +396,32 @@ if option == "Component Information":
         st.markdown("---")
         component = st.session_state.found_component
         st.markdown(f"### Details for: {st.session_state.searched_part.upper()}")
+        st.markdown("---")
+        
+        data_items = list(component.items())
+        
+        # Create a two-column layout
+        col1, col2 = st.columns(2)
+        
+        # Calculate midpoint to split attributes between columns
+        midpoint = (len(data_items) + 1) // 2
+        
+        # Display first half in column 1
+        with col1:
+            for i, (key, value) in enumerate(data_items[:midpoint]):
+                attr_name = key.replace("_", " ").title()
+                attr_value = str(value).strip() if value and str(value).strip() else "N/A"
+                st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{attr_name}:</strong> {attr_value}</div>", unsafe_allow_html=True)
+        
+        # Display second half in column 2
+        with col2:
+            for i, (key, value) in enumerate(data_items[midpoint:], start=midpoint):
+                attr_name = key.replace("_", " ").title()
+                attr_value = str(value).strip() if value and str(value).strip() else "N/A"
+                st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{attr_name}:</strong> {attr_value}</div>", unsafe_allow_html=True)
 
-        # Build the markdown table string
-        md_table = "| Product Attribute | Attribute Value | Select Attribute |\n"
-        md_table += "|---|---|---|\n"
 
-        for key, value in component.items():
-            attr_name = key.replace("_", " ").title()
-            attr_value = str(value).strip() if value and str(value).strip() else "&nbsp;"
-
-            # Special handling for the 'Series' attribute to create a link
-            if key.lower() == 'series' and value:
-                # This is a sample URL structure. You may need to adjust it.
-                manufacturer = component.get("Manufacturer", "onsemi").lower()
-                url = f"https://www.mouser.in/c/?q={st.session_state.searched_part}"
-                attr_value = f"[{value}]({url})"
-            
-            md_table += f"| **{attr_name}** | {attr_value} | Select Attribute |\n"
-
-        st.markdown(md_table, unsafe_allow_html=True)
-
-
-# --- CORRECTED Test Requirement Generation Module ---
+# --- Test Requirement Generation Module (UNCHANGED) ---
 elif option == "Test Requirement Generation":
     st.subheader("Generate Detailed Test Requirements", anchor=False)
     st.caption("Enter keywords (e.g., 'water', 'vibration') to generate detailed automotive test procedures.")
@@ -432,13 +444,10 @@ elif option == "Test Requirement Generation":
             if matched_test:
                 st.markdown(f"#### Generated Procedure for: **{matched_test.get('name', 'N/A')}**")
                 
-                # Using a styled container for the output
                 with st.container():
                     st.markdown("<div class='card'>", unsafe_allow_html=True)
-                    
                     st.markdown(f"**Standard:** {matched_test.get('standard', 'N/A')}")
                     st.markdown(f"**Description:** {matched_test.get('description', 'N/A')}")
-                    
                     st.markdown("**Test Procedure:**")
                     for step in matched_test.get('procedure', []):
                         st.markdown(f"- {step}")
@@ -448,7 +457,6 @@ elif option == "Test Requirement Generation":
                         st.markdown(f"- **{param}:** {value}")
 
                     st.markdown(f"**Required Equipment:** {', '.join(matched_test.get('equipment', ['N/A']))}")
-                    
                     st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.warning(f"No detailed procedure found for '{user_case}'. Please try one of the following keywords: {', '.join(available_tests)}")
