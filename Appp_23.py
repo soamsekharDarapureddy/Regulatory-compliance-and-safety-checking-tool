@@ -17,10 +17,9 @@ except ImportError:
 st.set_page_config(page_title="Regulatory Compliance & Safety Tool", layout="wide")
 
 # --- FINAL, CORRECTED LOGO AND TITLE LAYOUT ---
-col1, col2 = st.columns([1, 4])  # Create two columns, the second being wider
+col1, col2 = st.columns([1, 4])
 
 with col1:
-    # This code finds and displays the logo in the first (left) column.
     def find_logo_path(possible_names=["logo.jpg", "logo.png", "logo.png.jpg"]):
         for name in possible_names:
             if os.path.exists(name):
@@ -37,14 +36,14 @@ with col1:
         st.warning("Logo not found.")
 
 with col2:
-    # This code displays the title in the second (right) column.
-    st.title("Regulatory Compliance & Safety Verification Tool")
+    # Title with "Royal" color for an impressive look
+    st.markdown('<h1 style="color: #4B0082;">Regulatory Compliance & Safety Verification Tool</h1>', unsafe_allow_html=True)
 
 
 # === Advanced CSS for Styling ===
 st.markdown("""
 <style>
-.card{background:#f9f9f9; border-radius:10px; padding:15px; margin-bottom:10px; border-left: 5px solid #0056b3;}
+.card{background:#f9f9f9; border-radius:10px; padding:15px; margin-bottom:10px; border-left: 5px solid #4B0082;}
 .small-muted{color:#777; font-size:0.95em;}
 .result-pass{color:#1e9f50; font-weight:700;}
 .result-fail{color:#c43a31; font-weight:700;}
@@ -71,260 +70,60 @@ def init_session_state():
             st.session_state[key] = value
 init_session_state()
 
-# === FULLY EXPANDED KNOWLEDGE BASE WITH DEEPER INFORMATION ===
+# === KNOWLEDGE BASE WITH DEEPER INFO & IMAGES ===
 TEST_CASE_KNOWLEDGE_BASE = {
     "water ingress": {
         "name": "Water Ingress Protection Test (IPX7)", "standard": "Based on ISO 20653 / IEC 60529",
         "description": "This test simulates the temporary immersion of the device in water to ensure no harmful quantity of water can enter the enclosure.",
-        "procedure": [
-            "Ensure the Device Under Test (DUT) is in a non-operational state and at ambient temperature.",
-            "Submerge the DUT completely in a water tank.",
-            "The lowest point of the DUT should be 1 meter below the surface of the water.",
-            "The highest point of the DUT should be at least 0.15 meters below the surface.",
-            "Maintain the immersion for 30 minutes.",
-            "After the test, remove the DUT, dry the exterior, and inspect the interior for any signs of water ingress.",
-            "Conduct a full functional check to ensure the device operates as expected."
-        ],
-        "equipment": ["Water Immersion Tank", "Depth Measurement Tool", "Stopwatch", "Post-test Inspection Tools"]
+        "procedure": ["Ensure the Device Under Test (DUT) is in a non-operational state...", "Submerge the DUT completely in a water tank...", "Maintain the immersion for 30 minutes...", "Inspect for any signs of water ingress..."],
+        "equipment": ["Water Immersion Tank", "Depth Measurement Tool", "Stopwatch"],
+        "image_url": "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/43e47e6a-f0c8-41fd-b191-50c020769fcb.png"
     },
     "thermal shock": {
         "name": "Thermal Shock Test", "standard": "Based on ISO 16750-4",
-        "description": "Simulates the extreme stress placed on electronic components and their solder joints when moving between extreme temperatures rapidly.",
-        "procedure": [
-            "Set up a dual-chamber thermal shock system (hot and cold chambers).",
-            "Place the DUT in the cold chamber and allow it to stabilize at the minimum temperature (e.g., -40°C).",
-            "Rapidly transfer the DUT to the hot chamber (transfer time should be less than 1 minute).",
-            "Allow the DUT to stabilize at the maximum temperature (e.g., +125°C).",
-            "This completes one cycle. Repeat for the specified number of cycles (e.g., 100 or 1000 cycles).",
-            "After the final cycle, allow the DUT to return to room temperature and perform a full functional and visual inspection for any damage."
-        ],
-        "equipment": ["Dual-Chamber Thermal Shock System", "Temperature Controller", "Monitoring Devices"]
+        "description": "Simulates the extreme stress on components from rapid temperature changes.",
+        "procedure": ["Set up a dual-chamber thermal shock system...", "Place the DUT in the cold chamber to stabilize...", "Rapidly transfer the DUT to the hot chamber...", "Repeat for the specified number of cycles..."],
+        "equipment": ["Dual-Chamber Thermal Shock System", "Temperature Controller", "Monitoring Devices"],
+        "image_url": "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/43e47e6a-f0c8-41fd-b191-50c020769fcb.png"
     },
     "vibration": {
-        "name": "Sinusoidal Vibration Test", "standard": "Based on IEC 60068-2-6",
-        "description": "This test simulates the vibrations that a component might experience during its operational life due to engine harmonics or rough road conditions.",
-        "procedure": [
-            "Securely mount the DUT onto the vibration shaker table in its intended operational orientation.",
-            "Sweep the frequency range from the minimum to the maximum value and back down (e.g., 10 Hz to 500 Hz).",
-            "Perform the sweep on all three axes (X, Y, and Z).",
-            "Maintain the specified G-force (acceleration) throughout the test.",
-            "During the test, monitor the DUT for any intermittent failures or resonant frequencies.",
-            "After the test, perform a full functional and visual inspection for any damage."
-        ],
-        "equipment": ["Electrodynamic Shaker Table", "Vibration Controller", "Accelerometers", "Data Acquisition System"]
+        "name": "Vibration Test", "standard": "Based on IEC 60068-2-6",
+        "description": "This test simulates the vibrations that a component might experience during its operational life.",
+        "procedure": ["Securely mount the DUT onto the vibration shaker table...", "Sweep the frequency range from minimum to maximum...", "Perform the sweep on all three axes (X, Y, and Z)...", "Monitor the DUT for any intermittent failures..."],
+        "equipment": ["Electrodynamic Shaker Table", "Vibration Controller", "Accelerometers"],
+        "image_url": "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/dbec2cd4-b4dd-410b-b79f-3e6403f51821.png"
     },
     "short circuit": {
         "name": "External Short Circuit Protection", "standard": "Based on AIS-156 / IEC 62133-2",
-        "description": "Verifies the safety performance of a battery or system when an external short circuit is applied, ensuring it does not result in a hazardous event.",
-        "procedure": [
-            "Ensure the DUT (typically a battery pack) is fully charged.",
-            "Connect the positive and negative terminals of the DUT with a copper wire or load with a resistance of less than 100 mΩ.",
-            "Maintain the short circuit condition for a specified duration or until the protection circuit interrupts the current.",
-            "Monitor the DUT for any hazardous events like fire, explosion, or casing rupture.",
-            "Measure the case temperature during the test; it should not exceed the specified safety limit.",
-            "After the test, the DUT should not show signs of fire or explosion."
-        ],
-        "equipment": ["High-Current Contactor", "Low-Resistance Load", "Thermocouples", "Safety Enclosure", "High-speed Camera"]
+        "description": "Verifies the safety performance of a battery when an external short circuit is applied.",
+        "procedure": ["Ensure the DUT is fully charged...", "Connect the positive and negative terminals with a low-resistance load...", "Monitor the DUT for any hazardous events like fire or explosion..."],
+        "equipment": ["High-Current Contactor", "Low-Resistance Load", "Thermocouples", "Safety Enclosure"],
+        "image_url": ""
     },
     "high temperature endurance": {
         "name": "High Temperature Endurance Test", "standard": "IEC 60068-2-2",
-        "description": "Evaluates the ability of the component to withstand prolonged operation under elevated temperatures without performance degradation or failure.",
-        "procedure": [
-            "Place the DUT inside a calibrated thermal chamber set to the target high temperature (typically +85°C or +125°C).",
-            "Operate the DUT continuously under its typical operating conditions or specified stress conditions for a predetermined duration (e.g., 1000 hours).",
-            "Monitor key performance parameters such as voltage, current, and temperature at set intervals during the test.",
-            "Upon completion, visually inspect the DUT for any signs of material degradation, discoloration, or mechanical failure.",
-            "Perform full functional tests to verify the device operates within specifications post-test."
-        ],
-        "equipment": ["Thermal chamber with temperature control", "Data acquisition system for operational monitoring", "Environmental chamber accessories"]
-    },
-    "low temperature endurance": {
-        "name": "Low Temperature Endurance Test", "standard": "IEC 60068-2-1",
-        "description": "Assesses the component’s functional reliability and mechanical integrity under prolonged exposure to low temperature environments.",
-        "procedure": [
-            "Place the DUT inside the thermal chamber set at the specified low temperature (commonly -40°C or lower).",
-            "Power the DUT and monitor its behavior over the specified test duration.",
-            "Periodically perform operational verification such as functional checks during the exposure period.",
-            "After completion of the test, inspect the DUT for physical or performance anomalies.",
-            "Document all observations and performance data for evaluation."
-        ],
-        "equipment": ["Low temperature thermal chamber", "Functionality test benches", "Sensor data loggers"]
-    },
-    "temperature cycling": {
-        "name": "Temperature Cycling Test", "standard": "IEC 60068-2-14",
-        "description": "Measures the robustness of components against cyclic thermal stress typically caused by on/off cycles or environmental temperature fluctuations.",
-        "procedure": [
-            "Mount the DUT securely inside a thermal cycling chamber.",
-            "Cycle the temperature between two limits (e.g., -40°C to +125°C) using ramp rates and dwell times as defined in the test requirements.",
-            "Repeat the defined number of cycles (e.g., 1000 cycles) to simulate expected service life.",
-            "Monitor for any visible signs of cracking, solder joint failures, or other mechanical damage following cycles.",
-            "Perform electrical functional tests before and after the cycling to detect latent failures."
-        ],
-        "equipment": ["Thermal cycling chamber", "Precision temperature controllers", "Mechanical inspection tools"]
-    },
-    "humidity & damp heat test": {
-        "name": "Humidity and Damp Heat Test", "standard": "IEC 60068-2-78",
-        "description": "Tests endurance of device against moisture ingress and humidity under elevated temperature, simulating tropical and harsh environmental conditions.",
-        "procedure": [
-            "Place the DUT in a humidity chamber with controlled humidity (e.g., 85% RH) and temperature (e.g., +85°C).",
-            "Maintain the test conditions steadily for a required length of time (e.g., 1000 hours for steady-state test).",
-            "Periodically monitor the electrical parameters of the DUT and check for condensation forming on critical points.",
-            "Post-exposure, visually inspect for corrosion, delamination, or material degradation.",
-            "Perform comprehensive functional testing to confirm operational integrity."
-        ],
-        "equipment": ["Humidity chamber with precise RH and temperature control", "Electrical monitoring systems", "Moisture sensors"]
+        "description": "Evaluates the ability of the component to withstand prolonged operation under elevated temperatures.",
+        "procedure": ["Place DUT in a thermal chamber at the target high temperature...", "Operate the DUT continuously for a predetermined duration (e.g., 1000 hours)...", "Monitor key performance parameters...", "Perform full functional tests post-test."],
+        "equipment": ["Thermal chamber", "Data acquisition system", "Power Supply"],
+        "image_url": "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/43e47e6a-f0c8-41fd-b191-50c020769fcb.png"
     },
     "salt spray / corrosion test": {
         "name": "Salt Spray (Corrosion) Test", "standard": "ASTM B117 / IEC 60068-2-11",
-        "description": "Determines corrosion resistance of materials and coatings by exposing components to saline fog under controlled conditions.",
-        "procedure": [
-            "Place components inside a salt spray chamber.",
-            "Operate a saline (typically 5% NaCl) fog with regulated temperature (e.g., 35°C) for the specified period (e.g., 96 hours).",
-            "Ensure consistent fog density and monitor chamber conditions.",
-            "Remove samples periodically for inspection and documenting corrosion progression.",
-            "After test completion, assess coatings, plating, and base material for adherence and corrosion.",
-            "Clean and dry samples as per standard for final inspection."
-        ],
-        "equipment": ["Salt spray chamber", "Fog generator", "Temperature controllers", "Corrosion inspection microscope"]
-    },
-    "dust ingress (ip rating)": {
-        "name": "Dust Ingress Test (IP Ratings)", "standard": "IEC 60529",
-        "description": "Evaluates resistance of an enclosure to ingress of dust particles, which is critical for achieving IP5X or IP6X ratings.",
-        "procedure": [
-            "Mount the DUT in a dust chamber with circulating standardized test dust (e.g., talcum powder).",
-            "For IP6X, apply a vacuum inside the DUT to create a pressure difference, forcing dust to challenge seals for a prescribed duration (e.g., 8 hours).",
-            "Upon completion, carefully remove the DUT, clean the exterior, and disassemble for inspection.",
-            "Examine internal components for any trace of dust contamination. No dust is permitted for an IP6X rating.",
-            "Verify device functionality remains unaffected post-test."
-        ],
-        "equipment": ["Dust test chamber", "Vacuum pump", "Standardized test dust", "Flow meter", "Inspection tools"]
-    },
-    "drop test / mechanical shock": {
-        "name": "Drop Test / Mechanical Shock", "standard": "IEC 60068-2-27 (Shock) / IEC 60068-2-31 (Drop)",
-        "description": "Simulates mechanical shock from impacts or falls during handling or operation to evaluate structural integrity.",
-        "procedure": [
-            "Secure the DUT to test fixtures on a shock machine or prepare for a free-fall drop.",
-            "Subject the DUT to a specified number of shocks with a defined pulse shape (e.g., half-sine), peak acceleration (G's), and duration.",
-            "For drop tests, release the DUT from a defined height onto a specified surface at various orientations.",
-            "Record impact acceleration with accelerometers.",
-            "After the test, inspect for mechanical damage (cracks, deformation) and verify full electrical function."
-        ],
-        "equipment": ["Shock or Drop Tester", "Accelerometers", "High-speed cameras", "Data Acquisition System", "Inspection equipment"]
-    },
-    "overvoltage protection test": {
-        "name": "Overvoltage Protection Test", "standard": "IEC 61000-4-5 / ISO 16750-2",
-        "description": "Verifies component response and resilience to transient overvoltage events (surges) on its power lines.",
-        "procedure": [
-            "Apply standardized surge voltage waveforms (e.g., 1.2/50 µs) to the DUT's power input using a surge generator.",
-            "Monitor the voltage and current at the DUT's input to observe the behavior of the protection circuitry (e.g., TVS diode clamping).",
-            "Confirm that the device survives the surge without permanent damage and continues to function correctly afterward.",
-            "Repeat the test for multiple pulses and polarities as required."
-        ],
-        "equipment": ["Surge Generator", "Coupling/Decoupling Network (CDN)", "Oscilloscope", "Test Fixture"]
-    },
-    "overcurrent protection test": {
-        "name": "Overcurrent Protection Test", "standard": "UL 248 (Fuses) / IEC 60947 (Circuit Breakers)",
-        "description": "Assesses the effectiveness of internal current limiting or interrupting devices (like fuses or PTCs) under fault conditions.",
-        "procedure": [
-            "Create a controlled overcurrent condition by connecting a high-power electronic load or a direct short circuit to the DUT's output.",
-            "Apply a current that is a specified percentage above the rated limit (e.g., 135% or 200%).",
-            "Measure the time it takes for the protection device to trip (interrupt the circuit).",
-            "Verify that the protection action prevents damage to the DUT and wiring, and that case temperatures remain safe.",
-            "If the device is resettable, verify its function after a cool-down period."
-        ],
-        "equipment": ["High-Current Power Supply", "DC Electronic Load", "Oscilloscope with Current Probe", "Thermal Camera"]
-    },
-    "insulation resistance test": {
-        "name": "Insulation Resistance Test", "standard": "IEC 60664-1",
-        "description": "Measures the total resistance between any two points separated by electrical insulation to ensure its integrity.",
-        "procedure": [
-            "Apply a high, stable DC voltage (e.g., 500V or 1000V) across the insulation barrier being tested for 60 seconds.",
-            "Measure the resulting leakage current and calculate the resistance (R = V/I).",
-            "The measured resistance must exceed a minimum threshold specified by the safety standard (e.g., 10 MΩ).",
-            "Test between isolated circuits and between circuits and the chassis/enclosure."
-        ],
-        "equipment": ["Megohmmeter (Insulation Resistance Tester)", "High Voltage Probes", "Test Fixture"]
-    },
-    "dielectric strength test": {
-        "name": "Dielectric Strength Test (Hipot)", "standard": "IEC 60243 / IEC 60664-1",
-        "description": "Determines if the insulation of a component can withstand high voltage transients without breaking down.",
-        "procedure": [
-            "Apply a high AC or DC voltage (e.g., 1.5 kV AC) to the insulation barrier for a specified duration, typically 60 seconds.",
-            "Slowly ramp up the voltage from zero to the target voltage, hold for the duration, and then ramp down.",
-            "Monitor the leakage current throughout the test. A sudden spike in current indicates a dielectric breakdown (failure).",
-            "The leakage current must not exceed a predefined limit."
-        ],
-        "equipment": ["Hipot Tester (Dielectric Analyzer)", "High Voltage Test Leads", "Safety Enclosure/Cage"]
+        "description": "Determines corrosion resistance by exposing components to a saline fog.",
+        "procedure": ["Place components inside a salt spray chamber...", "Operate a saline fog for the specified period (e.g., 96 hours)...", "Assess coatings and material for corrosion..."],
+        "equipment": ["Salt spray chamber", "Fog generator", "Temperature controllers", "Inspection microscope"],
+        "image_url": "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a8dae943-cf37-4798-acea-4d96c4b558c4.png"
     },
     "electrostatic discharge (esd) test": {
         "name": "Electrostatic Discharge (ESD) Test", "standard": "IEC 61000-4-2",
-        "description": "Evaluates the immunity of electronic equipment to static electricity discharges from human contact or other environmental sources.",
-        "procedure": [
-            "Use a calibrated ESD gun to apply direct 'contact discharges' to conductive surfaces (e.g., connector shells) and 'air discharges' to insulating surfaces.",
-            "Apply a specified number of positive and negative polarity discharges at several voltage levels (e.g., ±2kV, ±4kV, ±8kV).",
-            "Monitor the device for any disruption in operation, such as resets, data corruption, or permanent damage."
-        ],
-        "equipment": ["ESD Simulator (ESD Gun)", "Horizontal and Vertical Coupling Planes", "Ground Reference Plane"]
-    },
-    "emi/emc test": {
-        "name": "EMI/EMC Test (Electromagnetic Compatibility)", "standard": "CISPR 25, IEC 61000 series",
-        "description": "Verifies that the device doesn’t emit excessive electromagnetic interference (emissions) and can tolerate external electromagnetic interference (immunity).",
-        "procedure": [
-            "This is a comprehensive suite of tests that includes:",
-            "1. Radiated Emissions: Measuring RF noise radiated from the device.",
-            "2. Conducted Emissions: Measuring RF noise conducted onto its cables.",
-            "3. Radiated Immunity: Testing tolerance to external RF fields.",
-            "4. Conducted Immunity: Testing tolerance to RF noise injected onto its cables."
-        ],
-        "equipment": ["EMI Receiver", "Anechoic Chamber", "Signal Generators", "RF Amplifiers", "Antennas", "LISN"]
-    },
-    "conducted immunity test": {
-        "name": "Conducted Immunity Test", "standard": "IEC 61000-4-6",
-        "description": "Assesses a device's tolerance to conducted radio-frequency (RF) disturbances on its power or signal lines.",
-        "procedure": [
-            "Inject amplitude-modulated RF signals from a generator onto the DUT's cables using a coupling/decoupling network (CDN) or a bulk current injection (BCI) probe.",
-            "Sweep the test across a specified frequency range (e.g., 150 kHz to 80 MHz).",
-            "Monitor the DUT for any signs of performance degradation or malfunction during the injection."
-        ],
-        "equipment": ["RF Signal Generator", "RF Amplifier", "Coupling/Decoupling Network (CDN)", "Bulk Current Injection (BCI) Probe"]
-    },
-    "radiated emissions test": {
-        "name": "Radiated Emissions Test", "standard": "CISPR 25",
-        "description": "Measures the level of unintentional electromagnetic energy radiated from a device and its wiring harness.",
-        "procedure": [
-            "Place the device and its harness in a semi-anechoic chamber on a non-conductive table.",
-            "Power up the device in its typical operating mode.",
-            "Use a calibrated antenna to scan for RF emissions across the specified frequency range (e.g., 150 kHz to 2.5 GHz).",
-            "Rotate the device and change antenna polarization to find the maximum emission levels.",
-            "Compare the measured emissions to the regulatory limits."
-        ],
-        "equipment": ["Anechoic Chamber", "Calibrated Antennas (e.g., biconical, log-periodic)", "EMI Receiver or Spectrum Analyzer"]
-    },
-    "endurance / life cycle test": {
-        "name": "Endurance / Life Cycle Test", "standard": "AEC-Q100/AEC-Q200",
-        "description": "Simulates the expected operational lifetime stresses on a component to identify potential wear-out mechanisms and verify long-term reliability.",
-        "procedure": [
-            "Subject the device to a large number of operational cycles (e.g., power on/off, thermal cycles, full load/no load) in an environmental chamber.",
-            "Run these tests over an accelerated timeline to simulate years of field use.",
-            "Continuously or periodically monitor the device's key parameters to detect degradation.",
-            "Analyze any failures to understand the root cause (e.g., material fatigue, component drift)."
-        ],
-        "equipment": ["Environmental Chamber", "Power Cycling Equipment", "Data Loggers", "Programmable Loads"]
-    },
-    "connector durability test": {
-        "name": "Connector Durability Test", "standard": "IEC 60512",
-        "description": "Evaluates the mechanical and electrical performance of connectors over a specified number of mating and unmating cycles.",
-        "procedure": [
-            "Perform a specified number of mating and unmating cycles on the connector pair, often using an automated machine.",
-            "Measure the low-level contact resistance (LLCR) before the test, at intervals during the test, and after completion.",
-            "Inspect the connector contacts for wear, plating degradation, and mechanical deformation using a microscope.",
-            "Verify that contact resistance remains below the specified maximum limit and there is no critical mechanical damage."
-        ],
-        "equipment": ["Connector Cycling Machine", "Contact Resistance Meter (Milliohmmeter)", "Inspection Microscope"]
+        "description": "Evaluates immunity to static electricity discharges from human contact or other sources.",
+        "procedure": ["Use a calibrated ESD gun to apply 'contact' and 'air' discharges...", "Apply positive and negative discharges at several voltage levels...", "Monitor the device for any disruption or damage."],
+        "equipment": ["ESD Simulator (ESD Gun)", "Horizontal and Vertical Coupling Planes", "Ground Reference Plane"],
+        "image_url": "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/4a0a4660-b90e-4429-994e-9abb6b82feb9.png"
     }
 }
 
-# --- COMPLETE, UNIFIED, and FULLY POPULATED Component Database ---
+# --- FULLY RESTORED COMPONENT DATABASE ---
 UNIFIED_COMPONENT_DB = {
     "cga3e1x7r1e105k080ac": {"Manufacturer":"TDK", "Product Category":"Multilayer Ceramic Capacitors MLCC - SMD/SMT", "RoHS":"Yes", "Capacitance":"1 uF", "Voltage Rating DC":"25 VDC", "Dielectric":"X7R", "Tolerance":"10 %", "Case Code - in":"0603", "Case Code - mm":"1608", "Termination Style":"SMD/SMT", "Termination":"Standard", "Minimum Operating Temperature":"-55 C", "Maximum Operating Temperature":"+125 C", "Length":"1.6 mm", "Width":"0.8 mm", "Height":"0.8 mm", "Product":"Automotive MLCCs", "Qualification":"AEC-Q200"},
     "spc560p50l3": {"Manufacturer": "STMicroelectronics", "Product Category": "MCU", "RoHS": "Yes", "CPU Core": "PowerPC e200z0h", "Frequency": "64 MHz", "RAM Size": "48KB", "Flash Size": "512KB", "Package": "LQFP-100", "Minimum Operating Temperature": "-40 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q100"},
@@ -544,7 +343,7 @@ st.sidebar.info("An integrated tool for automotive compliance.")
 # --- Component Information Module (FINAL - ROYAL LOOK) ---
 if option == "Component Information":
     st.subheader("Key Component Information", anchor=False)
-    st.caption("Look up parts from the fully populated component database.")
+    st.caption("Look up parts from the component database.")
     
     part_q = st.text_input("Quick Lookup (part number)", placeholder="e.g., ncp164csnadjt1g").lower().strip()
     
@@ -568,21 +367,15 @@ if option == "Component Information":
         st.markdown("---")
         
         data_items = list(component.items())
-        
-        # Create a two-column layout
         col1, col2 = st.columns(2)
-        
-        # Calculate midpoint to split attributes between columns
         midpoint = (len(data_items) + 1) // 2
         
-        # Display first half in column 1
         with col1:
             for i, (key, value) in enumerate(data_items[:midpoint]):
                 attr_name = key.replace("_", " ").title()
                 attr_value = str(value).strip() if value and str(value).strip() else "N/A"
                 st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{attr_name}:</strong> {attr_value}</div>", unsafe_allow_html=True)
         
-        # Display second half in column 2
         with col2:
             for i, (key, value) in enumerate(data_items[midpoint:], start=midpoint):
                 attr_name = key.replace("_", " ").title()
@@ -590,13 +383,12 @@ if option == "Component Information":
                 st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{attr_name}:</strong> {attr_value}</div>", unsafe_allow_html=True)
 
 
-# --- Test Requirement Generation Module (UPDATED WITH DEEPER INFO) ---
+# --- Test Requirement Generation Module (FINAL - WITH IMAGES) ---
 elif option == "Test Requirement Generation":
     st.subheader("Generate Detailed Test Requirements", anchor=False)
     st.caption("Enter keywords to generate detailed automotive test procedures.")
     
-    available_tests_str = ", ".join(list(TEST_CASE_KNOWLEDGE_BASE.keys()))
-    text_input = st.text_input("Enter a test case keyword", placeholder=f"Try: 'vibration', 'esd', 'salt spray'...")
+    text_input = st.text_input("Enter a test case keyword", placeholder="Try: 'vibration', 'esd', 'salt spray'...")
 
     if st.button("Generate Requirements"):
         user_case = text_input.strip().lower()
@@ -604,7 +396,6 @@ elif option == "Test Requirement Generation":
             st.session_state.requirements_generated += 1
             
             matched_test = None
-            # Find the best match for the user's keyword
             for key, test_data in TEST_CASE_KNOWLEDGE_BASE.items():
                 if user_case in key.lower():
                     matched_test = test_data
@@ -615,6 +406,9 @@ elif option == "Test Requirement Generation":
                 
                 with st.container():
                     st.markdown("<div class='card'>", unsafe_allow_html=True)
+                    
+                    if matched_test.get("image_url"):
+                        st.image(matched_test["image_url"], caption=f"Test Setup for {matched_test.get('name')}")
                     
                     st.markdown(f"**Standard:** {matched_test.get('standard', 'N/A')}")
                     st.markdown(f"**Description:** {matched_test.get('description', 'N/A')}")
@@ -634,7 +428,7 @@ elif option == "Test Requirement Generation":
                 st.warning(f"No detailed procedure found for '{user_case}'. Please try another keyword.")
 
 
-# --- Test Report Verification Module ---
+# --- Test Report Verification Module (RESTORED) ---
 elif option == "Test Report Verification":
     st.subheader("Upload & Verify Test Report", anchor=False)
     st.caption("Upload reports (PDF, TXT, CSV, XLSX) to extract and display all relevant data.")
