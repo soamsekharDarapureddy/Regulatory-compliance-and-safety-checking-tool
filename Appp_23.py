@@ -63,7 +63,6 @@ def init_session_state():
             st.session_state[key] = value
 init_session_state()
 
-
 # === UPGRADED KNOWLEDGE BASE with Detailed Procedures ===
 TEST_CASE_KNOWLEDGE_BASE = {
     "water ingress": {
@@ -147,6 +146,7 @@ TEST_CASE_KNOWLEDGE_BASE = {
     }
 }
 
+
 # --- COMPLETE, UNIFIED, and FULLY POPULATED Component Database ---
 UNIFIED_COMPONENT_DB = {
     "cga3e1x7r1e105k080ac": {"Manufacturer":"TDK", "Product Category":"Multilayer Ceramic Capacitors MLCC - SMD/SMT", "RoHS":"Yes", "Capacitance":"1 uF", "Voltage Rating DC":"25 VDC", "Dielectric":"X7R", "Tolerance":"10 %", "Case Code - in":"0603", "Case Code - mm":"1608", "Termination Style":"SMD/SMT", "Termination":"Standard", "Minimum Operating Temperature":"-55 C", "Maximum Operating Temperature":"+125 C", "Length":"1.6 mm", "Width":"0.8 mm", "Height":"0.8 mm", "Product":"Automotive MLCCs", "Qualification":"AEC-Q200"},
@@ -169,6 +169,7 @@ UNIFIED_COMPONENT_DB = {
     "grt155r71h104ke01d": {"Manufacturer": "Murata", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "0.1uF", "Voltage Rating DC": "50V", "Dielectric": "X7R", "Case Code - mm": "1005", "Tolerance": "10%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q200"},
     "grt21br61e226me13l": {"Manufacturer": "Murata", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "22uF", "Voltage Rating DC": "25V", "Dielectric": "X5R", "Case Code - mm": "2012", "Tolerance": "20%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "85 C", "Qualification": "AEC-Q200"},
     "grt1555c1h150fa02d": {"Manufacturer": "Murata", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "15pF", "Voltage Rating DC": "50V", "Dielectric": "C0G", "Case Code - mm": "1005", "Tolerance": "1%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q200"},
+    "c1210c226k8racauto": {"Manufacturer": "KEMET", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "22uF", "Voltage Rating DC": "10V", "Dielectric": "X7R", "Case Code - in": "1210", "Tolerance": "10%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q200"},
     "0402yc222j4t2a": {"Manufacturer": "AVX", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "2.2nF", "Voltage Rating DC": "16V", "Dielectric": "X7R", "Case Code - in": "0402", "Tolerance": "5%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q200"},
     "gcm1555c1h560fa16d": {"Manufacturer": "Murata", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "56pF", "Voltage Rating DC": "50V", "Dielectric": "C0G", "Case Code - mm": "1005", "Tolerance": "1%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q200"},
     "grt1555c1h330fa02d": {"Manufacturer": "Murata", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "33pF", "Voltage Rating DC": "50V", "Dielectric": "C0G", "Case Code - mm": "1005", "Tolerance": "1%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q200"},
@@ -189,6 +190,7 @@ UNIFIED_COMPONENT_DB = {
     "ac0402jrx7r9bb152": {"Manufacturer": "Yageo", "Product Category": "Capacitor", "RoHS": "Yes", "Capacitance": "1.5nF", "Voltage Rating DC": "50V", "Dielectric": "X7R", "Case Code - in": "0402", "Tolerance": "5%", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "125 C", "Qualification": "AEC-Q200"},
     "d5v0h1b2lpq-7b": {"Manufacturer": "Diodes Inc.", "Product Category": "TVS Diode", "RoHS": "Yes", "V Rwm": "5V", "Power": "30W", "Package": "X2-DFN1006-2", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "150 C"},
     "szmmbz9v1alt3g": {"Manufacturer": "onsemi", "Product Category": "Zener Diode", "RoHS": "Yes", "Vz": "9.1V", "Power": "225mW", "Tolerance": "5%", "Package": "SOT-23", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "150 C"},
+    "mmbz5227blt3g": {"Manufacturer": "onsemi", "Product Category": "Zener Diode", "RoHS": "Yes", "Vz": "3.6V", "Power": "225mW", "Tolerance": "5%", "Package": "SOT-23", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "150 C"},
     "d24v0s1u2tq-7": {"Manufacturer": "Diodes Inc.", "Product Category": "TVS Diode Array", "RoHS": "Yes", "V Rwm": "24V", "Channels": "1", "Package": "SOD-323", "Minimum Operating Temperature": "-65 C", "Maximum Operating Temperature": "150 C"},
     "b340bq-13-f": {"Manufacturer": "Diodes Inc.", "Product Category": "Schottky Diode", "RoHS": "Yes", "VRRM": "40V", "If(AV)": "3A", "Package": "SMC", "Minimum Operating Temperature": "-65 C", "Maximum Operating Temperature": "150 C", "Qualification": "AEC-Q101"},
     "tld8s22ah": {"Manufacturer": "Infineon", "Product Category": "TVS Diode", "RoHS": "Yes", "V Rwm": "22V", "Power": "8000W", "Package": "DO-218AB", "Minimum Operating Temperature": "-55 C", "Maximum Operating Temperature": "175 C", "Qualification": "AEC-Q101"},
@@ -213,6 +215,7 @@ UNIFIED_COMPONENT_DB = {
     "dmp2070uq-7": {"Manufacturer": "Diodes Inc.", "Product Category": "MOSFET", "RoHS": "Yes", "Vds": "20V", "Id": "5.6A", "Rds(on)": "38 mOhm", "Package": "SOT-23", "Qualification": "AEC-Q101"},
     "ac0402jr-070rl": {"Manufacturer": "Yageo", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "0 Ohm", "Power": "0.063W", "Case Code - in": "0402", "Product": "Jumper", "Qualification": "AEC-Q200"},
     "ac0402fr-07100kl": {"Manufacturer": "Yageo", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "100 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
+    "ac0603fr-074k7l": {"Manufacturer": "Yageo", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "4.7 kOhm", "Power": "0.1W", "Tolerance": "1%", "Case Code - in": "0603", "Qualification": "AEC-Q200"},
     "rmcf0402ft158k": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "158 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
     "rmcf0402ft30k0": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "30 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
     "rmcf0402ft127k": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "127 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
@@ -240,6 +243,7 @@ UNIFIED_COMPONENT_DB = {
     "rmcf0402ft3k48": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "3.48 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
     "rmcf0402ft1k50": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "1.5 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
     "rmcf0402ft4k02": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "4.02 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
+    "rc0402fr-071m0l": {"Manufacturer": "Yageo", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "1 MOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
     "rmcf1206zt0r00": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "0 Ohm", "Power": "0.25W", "Case Code - in": "1206", "Product": "Jumper", "Qualification": "AEC-Q200"},
     "rmcf0402ft402k": {"Manufacturer": "Stackpole", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "402 kOhm", "Power": "0.063W", "Tolerance": "1%", "Case Code - in": "0402", "Qualification": "AEC-Q200"},
     "ac0603fr-7w20kl": {"Manufacturer": "Yageo", "Product Category": "Resistor", "RoHS": "Yes", "Resistance": "20 kOhm", "Power": "0.1W", "Tolerance": "1%", "Case Code - in": "0603", "Qualification": "AEC-Q200"},
@@ -293,7 +297,7 @@ def intelligent_parser(text: str):
         patterns = [
             r'^(.*?)\s*-->\s*(Passed|Failed|Success)\s*-->\s*(.+)$',
             r'^(.*?)\s*-->\s*(.+)$',
-            r'^\d+:\s*([A-Z_]+):\s*"([A-Z]+)"$',
+            r'^\d+:\s*([A-Z_]+):\s*\"([A-Z]+)\"$',
             r'^(.+?)\s+is\s+(success|failure|passed|failed)$',
             r'^(.+?)\s+(Failed|Passed)$',
         ]
@@ -400,7 +404,7 @@ if option == "Component Information":
 
         display_data = {field: component.get(field, "") for field in fields_order}
         display_data['Part Number'] = st.session_state.searched_part
-
+        
         data_items = list(display_data.items())
         
         col1, col2 = st.columns(2)
