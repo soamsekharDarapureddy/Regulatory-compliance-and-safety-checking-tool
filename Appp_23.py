@@ -379,18 +379,21 @@ UNIFIED_COMPONENT_DB = {
 # === UPGRADED PARSING LOGIC FOR BATTERY REPORTS ===
 def parse_battery_profile(df):
     try:
-        header_row_index = -1; col_map = {}
+        header_row_index = -1
         for i, row in df.iterrows():
             row_values = [str(v).upper() for v in row.values]
             if 'TIME' in row_values and 'VOLTAGE' in row_values:
-                header_row_index = i; df.columns = [str(c).strip().upper() if c else "" for c in df.iloc[i]]; break
+                header_row_index = i
+                df.columns = [str(c).strip().upper() if c else "" for c in df.iloc[i]]
+                break
+        
         if header_row_index == -1: return None
         df = df.iloc[header_row_index + 1:].reset_index(drop=True)
         time_col = next((c for c in df.columns if 'TIME' in c), None); volt_col = next((c for c in df.columns if 'VOLTAGE' in c), None)
         curr_col = next((c for c in df.columns if 'CURRENT' in c), None); ah_col = next((c for c in df.columns if 'AH' in c), None)
         if not all([time_col, volt_col, curr_col, ah_col]): return None
         for col in [volt_col, curr_col, ah_col]: df[col] = pd.to_numeric(df[col], errors='coerce')
-        df = df.dropna(subset=[volt_col, curr_col, ah_col]);
+        df = df.dropna(subset=[volt_col, curr_col, ah_col])
         if df.empty: return None
         return {"TestName": "Battery Charge/Discharge Profile", "Result": "Data Extracted",
             "Details": { "Total Duration": df[time_col].iloc[-1], "Starting Voltage (V)": f"{df[volt_col].iloc[0]:.2f}",
@@ -440,9 +443,11 @@ if option == "Component Information":
         data_items = list(st.session_state.found_component.items())
         col1, col2 = st.columns(2); midpoint = (len(data_items) + 1) // 2
         with col1:
-            for i, (k, v) in enumerate(data_items[:midpoint]): st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{k.replace('_', ' ').title()}:</strong> {v}</div>", unsafe_allow_html=True)
+            for i, (k, v) in enumerate(data_items[:midpoint]):
+                st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{k.replace('_', ' ').title()}:</strong> {v}</div>", unsafe_allow_html=True)
         with col2:
-            for i, (k, v) in enumerate(data_items[midpoint:], start=midpoint): st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{k.replace('_', ' ').title()}:</strong> {v}</div>", unsafe_allow_html=True)
+            for i, (k, v) in enumerate(data_items[midpoint:], start=midpoint):
+                st.markdown(f"<div class='attr-item'><span>{i+1}. </span><strong>{k.replace('_', ' ').title()}:</strong> {v}</div>", unsafe_allow_html=True)
 
 # --- Test Requirement Generation Module ---
 elif option == "Test Requirement Generation":
@@ -455,10 +460,15 @@ elif option == "Test Requirement Generation":
             st.markdown(f"#### Generated Procedure for: **{matched_test.get('name', 'N/A')}**")
             with st.container():
                 st.markdown("<div class='card'>", unsafe_allow_html=True)
-                if matched_test.get("image_url"): st.image(matched_test["image_url"], caption=f"Test Setup for {matched_test.get('name')}")
+                if matched_test.get("image_url"):
+                    st.image(matched_test["image_url"], caption=f"Test Setup for {matched_test.get('name')}")
                 st.markdown(f"**Standard:** {matched_test.get('standard', 'N/A')}<br>**Description:** {matched_test.get('description', 'N/A')}", unsafe_allow_html=True)
-                st.markdown("**Test Procedure:**"); [st.markdown(f"- {step}") for step in matched_test.get('procedure', [])]
-                st.markdown("**Required Equipment:**"); [st.markdown(f"- {item}") for item in matched_test.get('equipment', [])]
+                st.markdown("**Test Procedure:**")
+                for step in matched_test.get('procedure', []):
+                    st.markdown(f"- {step}")
+                st.markdown("**Required Equipment:**")
+                for item in matched_test.get('equipment', []):
+                    st.markdown(f"- {item}")
                 st.markdown("</div>", unsafe_allow_html=True)
         else: st.warning(f"No detailed procedure found for '{user_case}'.")
 
@@ -470,8 +480,10 @@ elif option == "Test Report Verification":
     if uploaded_file:
         parsed_data = parse_report(uploaded_file)
         if parsed_data:
-            st.session_state.reports_verified += 1; st.markdown(f"### Found {len(parsed_data)} Test Summary in the report.")
-            for t in parsed_data: display_test_card(t, '#0056b3')
+            st.session_state.reports_verified += 1
+            st.markdown(f"### Found {len(parsed_data)} Test Summary in the report.")
+            for t in parsed_data:
+                display_test_card(t, '#0056b3')
         else: st.warning("No recognizable test data or battery profile was extracted from the uploaded file.")
 
 # --- Dashboard & Analytics Module ---
