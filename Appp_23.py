@@ -49,9 +49,6 @@ st.markdown("""
 .result-pass{color:#1e9f50; font-weight:700;}
 .result-fail{color:#c43a31; font-weight:700;}
 .main .block-container { padding-top: 2rem; }
-.attribute-table { width: 100%; border-collapse: collapse; }
-.attribute-table td, .attribute-table th { padding: 8px; border: 1px solid #ddd; text-align: left; }
-.attribute-table th { background-color: #f2f2f2; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -392,15 +389,24 @@ if option == "Component Information":
         component = st.session_state.found_component
         st.markdown(f"### Details for: {st.session_state.searched_part.upper()}")
 
-        # Build the HTML table string to display all component attributes
-        table_html = "<table class='attribute-table'><tr><th>Attribute</th><th>Value</th></tr>"
+        # Build the markdown table string
+        md_table = "| Product Attribute | Attribute Value | Select Attribute |\n"
+        md_table += "|---|---|---|\n"
+
         for key, value in component.items():
-            key_html = key.replace("_", " ").title()
-            value_html = str(value) if value else "&nbsp;"
-            table_html += f"<tr><td><strong>{key_html}</strong></td><td>{value_html}</td></tr>"
-        table_html += "</table>"
-        
-        st.markdown(table_html, unsafe_allow_html=True)
+            attr_name = key.replace("_", " ").title()
+            attr_value = str(value).strip() if value and str(value).strip() else "&nbsp;"
+
+            # Special handling for the 'Series' attribute to create a link
+            if key.lower() == 'series' and value:
+                # This is a sample URL structure. You may need to adjust it.
+                manufacturer = component.get("Manufacturer", "onsemi").lower()
+                url = f"https://www.mouser.in/c/?q={st.session_state.searched_part}"
+                attr_value = f"[{value}]({url})"
+            
+            md_table += f"| **{attr_name}** | {attr_value} | Select Attribute |\n"
+
+        st.markdown(md_table, unsafe_allow_html=True)
 
 
 # --- CORRECTED Test Requirement Generation Module ---
