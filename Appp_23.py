@@ -71,86 +71,112 @@ def init_session_state():
             st.session_state[key] = value
 init_session_state()
 
-# === UPGRADED KNOWLEDGE BASE with Detailed Procedures ===
+# === EXPANDED KNOWLEDGE BASE with new tests ===
 TEST_CASE_KNOWLEDGE_BASE = {
     "water ingress": {
-        "name": "Water Ingress Protection Test (IPX7)",
-        "standard": "Based on ISO 20653 / IEC 60529",
-        "description": "This test simulates the temporary immersion of the device in water to ensure no harmful quantity of water can enter the enclosure.",
-        "procedure": [
-            "Ensure the Device Under Test (DUT) is in a non-operational state and at ambient temperature.",
-            "Submerge the DUT completely in a water tank.",
-            "The lowest point of the DUT should be 1 meter below the surface of the water.",
-            "The highest point of the DUT should be at least 0.15 meters below the surface.",
-            "Maintain the immersion for the specified duration.",
-            "After the test, remove the DUT, dry the exterior, and inspect the interior for any signs of water ingress.",
-            "Conduct a functional check to ensure the device operates as expected."
-        ],
-        "parameters": {
-            "Immersion Depth": "1 meter",
-            "Test Duration": "30 minutes",
-            "Water Temperature": "Ambient (within 5°C of DUT temperature)"
-        },
-        "equipment": ["Water Immersion Tank", "Depth Measurement Tool", "Stopwatch"]
+        "name": "Water Ingress Protection Test (IPX7)", "standard": "Based on ISO 20653 / IEC 60529",
+        "description": "Simulates temporary immersion to ensure no harmful quantity of water enters.",
+        "procedure": ["Submerge DUT 1m deep for 30 minutes.", "Inspect for water ingress and test functionality."]
     },
     "thermal shock": {
-        "name": "Thermal Shock Test",
-        "standard": "Based on ISO 16750-4",
-        "description": "This test simulates the stress placed on electronic components when moving between extreme temperatures, such as a car being washed in winter.",
-        "procedure": [
-            "Set up a dual-chamber thermal shock system (hot and cold chambers).",
-            "Place the DUT in the cold chamber and allow it to stabilize at the minimum temperature.",
-            "Rapidly transfer the DUT to the hot chamber (transfer time should be less than 1 minute).",
-            "Allow the DUT to stabilize at the maximum temperature.",
-            "This completes one cycle. Repeat for the specified number of cycles.",
-            "After the final cycle, allow the DUT to return to room temperature and perform a full functional and visual inspection."
-        ],
-        "parameters": {
-            "Minimum Temperature": "-40°C",
-            "Maximum Temperature": "+85°C",
-            "Soak Time per Chamber": "1 hour",
-            "Number of Cycles": "100 cycles"
-        },
-        "equipment": ["Dual-Chamber Thermal Shock System"]
+        "name": "Thermal Shock Test", "standard": "Based on ISO 16750-4",
+        "description": "Simulates stress from rapid temperature changes.",
+        "procedure": ["Alternate DUT between extreme hot and cold chambers for many cycles.", "Inspect for damage and test functionality."]
     },
     "vibration": {
-        "name": "Sinusoidal Vibration Test",
-        "standard": "Based on IEC 60068-2-6",
-        "description": "This test simulates the vibrations that a component might experience during its operational life due to engine harmonics or rough road conditions.",
-        "procedure": [
-            "Securely mount the DUT onto the vibration shaker table in its intended orientation.",
-            "Sweep the frequency range from the minimum to the maximum value and back down.",
-            "Perform the sweep on all three axes (X, Y, and Z).",
-            "Maintain the specified G-force (acceleration) throughout the test.",
-            "During the test, monitor the DUT for any intermittent failures or resonant frequencies.",
-            "After the test, perform a full functional and visual inspection for any damage."
-        ],
-        "parameters": {
-            "Frequency Range": "10 Hz to 500 Hz",
-            "Acceleration": "5g (49 m/s²)",
-            "Sweep Rate": "1 octave/minute",
-            "Duration per Axis": "2 hours"
-        },
-        "equipment": ["Electrodynamic Shaker Table", "Vibration Controller", "Accelerometers"]
+        "name": "Sinusoidal Vibration Test", "standard": "Based on IEC 60068-2-6",
+        "description": "Simulates vibrations from engine harmonics or rough roads.",
+        "procedure": ["Mount DUT on a shaker table and sweep frequency range on all three axes.", "Monitor for failures and inspect after test."]
     },
-     "short circuit": {
-        "name": "External Short Circuit Protection",
-        "standard": "Based on AIS-156 / IEC 62133-2",
-        "description": "Verifies the safety performance of the battery or system when an external short circuit is applied.",
-        "procedure": [
-            "Ensure the DUT is fully charged.",
-            "Connect the positive and negative terminals of the DUT with a copper wire or load with a resistance of less than 100 mΩ.",
-            "Maintain the short circuit condition for the specified duration or until the protection circuit interrupts the current.",
-            "Monitor the DUT for any hazardous events like fire, explosion, or casing rupture.",
-            "Measure the case temperature during the test; it should not exceed the specified limit.",
-            "After the test, the DUT should not show signs of fire or explosion."
-        ],
-        "parameters": {
-            "Short Circuit Resistance": "< 100 mΩ",
-            "Test Temperature": "55°C ± 5°C",
-            "Observation Period": "1 hour after the event"
-        },
-        "equipment": ["High-Current Contactor", "Low-Resistance Load", "Thermocouples", "Safety Enclosure"]
+    "short circuit": {
+        "name": "External Short Circuit Protection", "standard": "Based on AIS-156 / IEC 62133-2",
+        "description": "Verifies safety when a short circuit is applied.",
+        "procedure": ["Short DUT terminals with low resistance.", "Monitor for fire, explosion, or rupture."]
+    },
+    "high temperature endurance": {
+        "name": "High Temperature Endurance Test", "standard": "Based on IEC 60068-2-2",
+        "description": "Tests the component's ability to operate reliably at high temperatures for an extended period.",
+        "procedure": ["Place DUT in a thermal chamber at a specified high temperature (e.g., +85°C or +125°C).", "Keep the DUT powered and operational for a long duration (e.g., 1000 hours).", "Monitor for any performance degradation or failure."]
+    },
+    "low temperature endurance": {
+        "name": "Low Temperature Endurance Test", "standard": "Based on IEC 60068-2-1",
+        "description": "Tests the component's ability to operate reliably at low temperatures.",
+        "procedure": ["Place DUT in a thermal chamber at a specified low temperature (e.g., -40°C).", "Keep the DUT powered and operational for a specified duration.", "Perform functional checks to ensure correct operation."]
+    },
+    "temperature cycling": {
+        "name": "Temperature Cycling Test", "standard": "Based on IEC 60068-2-14",
+        "description": "Evaluates the component's resistance to repeated temperature changes.",
+        "procedure": ["Subject the DUT to a series of temperature cycles, alternating between high and low extremes (e.g., -40°C to +125°C).", "The rate of temperature change is controlled.", "Inspect for mechanical damage like solder joint cracks."]
+    },
+    "humidity & damp heat test": {
+        "name": "Humidity & Damp Heat Test", "standard": "Based on IEC 60068-2-30 / IEC 60068-2-78",
+        "description": "Assesses the component's reliability in high humidity environments.",
+        "procedure": ["Expose the DUT to a high-humidity (e.g., 85% RH) and high-temperature (e.g., 85°C) environment for a long duration.", "Monitor for corrosion, material degradation, and electrical failure."]
+    },
+    "salt spray / corrosion test": {
+        "name": "Salt Spray / Corrosion Test", "standard": "Based on IEC 60068-2-11",
+        "description": "Tests the corrosion resistance of coatings and materials.",
+        "procedure": ["Expose the DUT to a dense saltwater fog in a closed chamber for a specified period.", "Inspect for signs of corrosion, pitting, or degradation."]
+    },
+    "dust ingress (ip rating)": {
+        "name": "Dust Ingress Test (IP6X)", "standard": "Based on IEC 60529",
+        "description": "Tests the component's protection against solid particle (dust) ingress.",
+        "procedure": ["Place the DUT in a dust chamber with circulating fine dust (talcum powder).", "Maintain a vacuum inside the DUT to promote ingress.", "Inspect the interior for any dust deposits."]
+    },
+    "drop test / mechanical shock": {
+        "name": "Drop Test / Mechanical Shock", "standard": "Based on IEC 60068-2-27",
+        "description": "Simulates impacts the component might face during handling or operation.",
+        "procedure": ["Subject the DUT to non-repetitive mechanical shocks of a specified peak acceleration and duration.", "This is often done on a shock testing machine."]
+    },
+    "overvoltage protection test": {
+        "name": "Overvoltage Protection Test", "standard": "Based on ISO 16750-2",
+        "description": "Verifies that the component can withstand or safely shut down during an overvoltage condition.",
+        "procedure": ["Apply a voltage significantly higher than the maximum rated voltage to the DUT's input.", "Verify that the protection circuit activates and the device is not damaged."]
+    },
+    "overcurrent protection test": {
+        "name": "Overcurrent Protection Test", "standard": "Based on UL 2575 / relevant product standard",
+        "description": "Ensures the component's protection mechanism (e.g., fuse, PTC) works correctly.",
+        "procedure": ["Cause an overcurrent condition by drawing more than the rated current from the device.", "Verify that the protection circuit interrupts the current flow before damage occurs."]
+    },
+    "insulation resistance test": {
+        "name": "Insulation Resistance Test", "standard": "Based on IEC 60664-1",
+        "description": "Measures the resistance of the insulating materials to ensure electrical safety.",
+        "procedure": ["Apply a high DC voltage between isolated circuits and/or between circuits and chassis.", "Measure the resistance, which should be above a specified minimum (e.g., >10 MΩ)."]
+    },
+    "dielectric strength test": {
+        "name": "Dielectric Strength Test (Hipot)", "standard": "Based on IEC 60664-1",
+        "description": "Checks for breakdown in insulation by applying a high voltage.",
+        "procedure": ["Apply a high AC or DC voltage (e.g., 1000V) between isolated conductive parts for a short duration (e.g., 60 seconds).", "Monitor for any current leakage or dielectric breakdown."]
+    },
+    "electrostatic discharge (esd) test": {
+        "name": "Electrostatic Discharge (ESD) Test", "standard": "Based on IEC 61000-4-2",
+        "description": "Tests the component's immunity to static electricity discharges.",
+        "procedure": ["Apply high-voltage electrostatic discharges (both air and contact discharge) to various points on the DUT.", "Verify that the device continues to function correctly."]
+    },
+    "emi/emc test": {
+        "name": "EMI/EMC Test", "standard": "Based on CISPR 25 / IEC 61000 series",
+        "description": "Ensures the device does not emit excessive electromagnetic interference and is not susceptible to external interference.",
+        "procedure": ["Involves multiple specific tests like Radiated Emissions and Conducted Immunity."]
+    },
+    "conducted immunity test": {
+        "name": "Conducted Immunity Test", "standard": "Based on IEC 61000-4-6",
+        "description": "Tests the component's immunity to electromagnetic disturbances conducted along its cables.",
+        "procedure": ["Inject radio frequency (RF) noise onto the power and I/O cables of the DUT.", "Monitor the device for any malfunction."]
+    },
+    "radiated emissions test": {
+        "name": "Radiated Emissions Test", "standard": "Based on CISPR 25",
+        "description": "Measures the unintentional electromagnetic radiation emitted by the component.",
+        "procedure": ["Place the DUT in an anechoic chamber and measure the RF energy it emits using an antenna.", "Ensure emissions are below regulatory limits."]
+    },
+    "endurance / life cycle test": {
+        "name": "Endurance / Life Cycle Test", "standard": "Internal validation / AEC-Q100",
+        "description": "Simulates the component's entire expected lifespan under accelerated conditions.",
+        "procedure": ["Operate the DUT under stressful but realistic conditions (e.g., high temperature, max load) for a long duration to simulate years of use."]
+    },
+    "connector durability test": {
+        "name": "Connector Durability Test", "standard": "Based on EIA-364",
+        "description": "Tests the mechanical and electrical lifespan of connectors.",
+        "procedure": ["Subject the connector to a specified number of mating and unmating cycles.", "Measure contact resistance and inspect for physical wear."]
     }
 }
 
@@ -452,11 +478,6 @@ elif option == "Test Requirement Generation":
                     for step in matched_test.get('procedure', []):
                         st.markdown(f"- {step}")
 
-                    st.markdown("**Key Parameters:**")
-                    for param, value in matched_test.get('parameters', {}).items():
-                        st.markdown(f"- **{param}:** {value}")
-
-                    st.markdown(f"**Required Equipment:** {', '.join(matched_test.get('equipment', ['N/A']))}")
                     st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.warning(f"No detailed procedure found for '{user_case}'. Please try one of the following keywords: {', '.join(available_tests)}")
