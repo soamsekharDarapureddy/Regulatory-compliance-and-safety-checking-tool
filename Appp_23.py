@@ -49,13 +49,16 @@ st.markdown("""
 .result-pass{color:#1e9f50; font-weight:700;}
 .result-fail{color:#c43a31; font-weight:700;}
 .main .block-container { padding-top: 2rem; }
+.attribute-table { width: 100%; border-collapse: collapse; }
+.attribute-table td, .attribute-table th { padding: 8px; border: 1px solid #ddd; text-align: left; }
+.attribute-table th { background-color: #f2f2f2; }
 </style>
 """, unsafe_allow_html=True)
 
 # === Session State Initialization ===
 def init_session_state():
     state_defaults = {
-        "reports_verified": 0, "requirements_generated": 0, "found_component": None, 
+        "reports_verified": 0, "requirements_generated": 0, "found_component": None,
         "component_db": pd.DataFrame()
     }
     for key, value in state_defaults.items():
@@ -256,7 +259,7 @@ UNIFIED_COMPONENT_DB = {
     "pesd2canfd27v-tr": {"Manufacturer": "Nexperia", "Product Category": "ESD Suppressor", "RoHS": "Yes", "Bus Type": "CAN", "V Rwm": "27V", "Package": "SOT-23", "Qualification": "AEC-Q101"},
     "lt8912b": {"Manufacturer": "Analog Devices", "Product Category": "MIPI DSI to LVDS Bridge", "RoHS": "Yes", "Lanes": "4", "Resolution": "1080p", "Package": "QFN-48"},
     "sn74lv1t34qdckrq1": {"Manufacturer": "Texas Instruments", "Product Category": "Buffer Gate", "RoHS": "Yes", "Channels": "1", "Direction": "Uni-Directional", "Package": "SC-70", "Qualification": "AEC-Q100"},
-    "ncp164csnadjt1g": {"Manufacturer": "onsemi", "Product Category": "LDO Regulator", "RoHS": "Yes", "Output Voltage": "Adj", "Output Current": "250mA", "Package": "TSOP-5", "Qualification": "AEC-Q100"},
+    "ncp164csnadjt1g": {"Manufacturer": "onsemi", "Product Category": "LDO Voltage Regulators", "RoHS": "Yes", "Mounting Style": "SMD/SMT", "Package/Case": "TSOP-5", "Output Current": "300 mA", "Number of Outputs": "1 Output", "Polarity": "Positive", "Quiescent Current": "30 uA", "Input Voltage - Min": "1.6 V", "Input Voltage - Max": "5.5 V", "PSRR / Ripple Rejection - Typ": "85 dB", "Output Type": "Adjustable", "Minimum Operating Temperature": "-40 C", "Maximum Operating Temperature": "+150 C", "Series": "NCP164C", "Packaging": "Reel", "Brand": "onsemi", "Line Regulation": "0.5 mV/V", "Load Regulation": "2 mV/V", "Operating Temperature Range": "-40 C to +150 C", "Output Voltage Range": "1.2 V to 4.5 V", "Product": "LDO Voltage Regulators", "Product Type": "LDO Voltage Regulators", "Subcategory": "PMIC - Power Management ICs", "Type": "Low Noise", "Voltage Regulation Accuracy": "2 %"},
     "20279-001e-03": {"Manufacturer": "Amphenol", "Product Category": "Antenna", "RoHS": "Yes", "Product": "GPS", "Gain": "28 dBi", "Termination Style": "Adhesive"},
     "ncv8161asn180t1g": {"Manufacturer": "onsemi", "Product Category": "LDO Regulator", "RoHS": "Yes", "Output Voltage": "1.8V", "Output Current": "450mA", "Package": "TSOP-5", "Qualification": "AEC-Q100"},
     "drtr5v0u2sr-7": {"Manufacturer": "Diodes Inc.", "Product Category": "ESD Suppressor", "RoHS": "Yes", "V Rwm": "5V", "Channels": "2", "Package": "SOT-23", "Qualification": "AEC-Q101"},
@@ -291,9 +294,9 @@ def intelligent_parser(text: str):
     for line in lines:
         line = line.strip()
         if not line: continue
-        
+
         test_data = {"TestName": "Not found", "Result": "N/A", "Actual": "Not found", "Standard": "Not found"}
-        
+
         patterns = [
             r'^(.*?)\s*-->\s*(Passed|Failed|Success)\s*-->\s*(.+)$',
             r'^(.*?)\s*-->\s*(.+)$',
@@ -317,7 +320,7 @@ def intelligent_parser(text: str):
                 elif i == 4: test_data.update({"TestName": groups[0].strip(), "Result": "PASS" if groups[1].lower() == "passed" else "FAIL"})
                 match_found = True
                 break
-        
+
         if match_found:
             KEYWORD_TO_STANDARD_MAP = {
                 "gps": "NMEA 0183", "gnss": "3GPP", "bluetooth": "Bluetooth Core Specification", "wifi": "IEEE 802.11",
@@ -329,7 +332,7 @@ def intelligent_parser(text: str):
                     test_data["Standard"] = standard
                     break
             extracted_tests.append(test_data)
-            
+
     return extracted_tests
 
 def parse_report(uploaded_file):
@@ -369,7 +372,7 @@ if option == "Component Information":
     st.subheader("Key Component Information", anchor=False)
     st.caption("Look up parts from the fully populated component database.")
     
-    part_q = st.text_input("Quick Lookup (part number)", placeholder="e.g., gcm155l81e104ke02d").lower().strip()
+    part_q = st.text_input("Quick Lookup (part number)", placeholder="e.g., ncp164csnadjt1g").lower().strip()
     
     if st.button("Find Component"):
         if part_q:
@@ -389,38 +392,16 @@ if option == "Component Information":
         component = st.session_state.found_component
         st.markdown(f"### Details for: {st.session_state.searched_part.upper()}")
 
-        if st.session_state.searched_part == 'gcm155l81e104ke02d':
-            component.setdefault('Part Name', '0.1µF 25V X8L 0402 Capacitor')
-            component.setdefault('Use', 'General Purpose Decoupling')
-            component.setdefault('Category', 'Capacitors')
-            component.setdefault('Type', 'Ceramic')
-            component.setdefault('Package Case', '0402')
-            component.setdefault('Operating Temp Range', '-55°C to 150°C')
-
-        fields_order = [
-            "Part Number", "Part Name", "Manufacturer", "Use", "Category", "Type",
-            "Capacitance", "Voltage Rating DC", "Tolerance", "Dielectric", "Package Case", "Operating Temp Range"
-        ]
-
-        display_data = {field: component.get(field, "") for field in fields_order}
-        display_data['Part Number'] = st.session_state.searched_part
+        # Build the HTML table string to display all component attributes
+        table_html = "<table class='attribute-table'><tr><th>Attribute</th><th>Value</th></tr>"
+        for key, value in component.items():
+            key_html = key.replace("_", " ").title()
+            value_html = str(value) if value else "&nbsp;"
+            table_html += f"<tr><td><strong>{key_html}</strong></td><td>{value_html}</td></tr>"
+        table_html += "</table>"
         
-        data_items = list(display_data.items())
-        
-        col1, col2 = st.columns(2)
-        midpoint = (len(data_items) + 1) // 2
-        
-        with col1:
-            for key, value in data_items[midpoint:]:
-                st.markdown(f"**{key}**")
-                st.markdown(str(value) if str(value).strip() else " ")
-                st.markdown("---")
+        st.markdown(table_html, unsafe_allow_html=True)
 
-        with col2:
-            for key, value in data_items[:midpoint]:
-                st.markdown(f"**{key}**")
-                st.markdown(str(value) if str(value).strip() else " ")
-                st.markdown("---")
 
 # --- CORRECTED Test Requirement Generation Module ---
 elif option == "Test Requirement Generation":
